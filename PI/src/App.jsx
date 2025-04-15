@@ -1,5 +1,5 @@
 import './App.css'
-import Cadastro from './pages/Cadastro'
+import Cadastro from './pages/cadastro/Cadastro'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 function App () {
 return (
