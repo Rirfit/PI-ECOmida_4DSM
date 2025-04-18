@@ -1,58 +1,41 @@
 import React from 'react';
-import "./Cadastro.css"
-import laranja from "../../assets/laranja.svg";
+import { Link } from 'react-router-dom';
+import './Cadastro.css';
 
 const Cadastro = () => {
   return (
-
     <>
-    <div className= "Cadastro-direito" >
-      
-      <h1 className="titulo">Cadastre-se</h1>
+      <div className="PagCadastro">
+        <div className="cadastro-imagem-lateral">
+          {/* O camminho da imagem esta no css*/}
 
-      <div className="input-label">
-        <h3>Nome</h3>
+        </div>
+
+        <div className="Cadastro-direito">
+          <div className="Cadastro-formulario">
+            <h1 className="cadastro-titulo">Cadastre-se</h1>
+
+            <div className="cadastro-texto"><h3>Nome</h3></div>
+            <div className="casdastro-input-container"><input type="text" placeholder="Digite seu nome" /></div>
+
+            <div className="cadastro-texto"><h3>Email</h3></div>
+            <div className="casdastro-input-container"><input type="email" placeholder="Digite seu email" /></div>
+
+            <div className="cadastro-texto"><h3>Senha</h3></div>
+            <div className="casdastro-input-container"><input type="password" placeholder="Digite sua senha" /></div>
+
+            <div className="cadastro-texto"><h3>Confirme sua senha</h3></div>
+            <div className="casdastro-input-container"><input type="password" placeholder="Repita sua senha" /></div>
+
+            <div className="cadastro-button-container"><button className="cadastro-btn-cadastrar">Cadastrar</button></div>
+
+            <Link to="/Login" className="Login"><h4>Já possui conta?</h4> </Link>
+          </div>
+        </div>
       </div>
 
-      <div className="input-container">
-        <input type="text" placeholder="Nome" className="input-field" />
-      </div>
-
-      <div className="input-label">
-        <h3>Email</h3>
-      </div>
-
-      <div className="input-container">
-        <input type="email" placeholder="Email" className="input-field" />
-      </div>
-
-      <div className="input-label">
-        <h3>Senha</h3>
-      </div>
-
-      <div className="input-container">
-        <input type="password" placeholder="Senha" className="input-field" />
-      </div>
-
-      <div className="input-label">
-        <h3>Confirme a sua senha</h3>
-      </div>
-
-      <div className="input-container">
-        <input type="password" placeholder="Confirmar senha" className="input-field" />
-      </div>
-
-      <div className="button-container">
-        <button className="btn-enviar">Enviar</button>
-      </div>
-
-      </div>
-
-      <div className="laranja">
-    <img src={laranja} alt="laranja" />
-  </div>
     </>
   );
-}
+};
 
 export default Cadastro;

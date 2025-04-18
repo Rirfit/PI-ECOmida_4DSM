@@ -1,0 +1,124 @@
+.PagLogin {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .login-imagem-lateral {
+    flex: 0.55;
+    background-image: url('../../assets/VegetaisLogin.png'); /* imagem */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .Login-direito {
+    flex: 0.45;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #E84C3D; /* fundo */
+  }
+  
+  .login-formulario {
+    width: 80%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+  }
+  
+  .login-titulo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 96px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    align-self: center;
+    margin-left: 10px;
+  }
+  
+  .login-texto h3 {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  
+  .login-input-container input {
+    width: 100%;
+    height: 42px;
+    background: #ffffff;
+    border-radius: 30px;
+    padding: 0 20px;
+    font-size: 16px;
+    border: none;
+  }
+  
+
+
+
+  
+  
+  .Esqueci{
+    font-family: 'inter', monospace;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: -40px;
+    align-self: center;
+    margin-left: 330px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  .Esqueci {
+    opacity: 0.7;
+  }
+
+
+
+  .Cadastro{
+    font-family: 'inter', monospace;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    align-self: left;
+    margin-left: 380px;  
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  .Cadastro:hover {
+    opacity: 0.7;
+  }
+
+  .login-button-container {
+    margin-top: -20px;
+  }
+  
+  .btn-login {
+    width: 215px;
+    height: 60px;
+    background: #4F7838;
+    border: 1px solid #000000;
+    border-radius: 30px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: center;
+    margin-left: 315px;
+    transition: all 0.2s ease;
+  }
+  /* Efeito ao pressionar */
+  .btn-login:active {
+  transform: scale(0.95); 
+  opacity: 0.8;           
+}
