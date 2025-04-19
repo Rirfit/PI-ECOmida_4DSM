@@ -52,7 +52,7 @@ export const Home = () => {
             <Link to="/Cadastro" className="home-botao2"><h4>Cadastre-se</h4> </Link>
           </div>
         </div>
-        
+
 
       </div>
       <Footer />
