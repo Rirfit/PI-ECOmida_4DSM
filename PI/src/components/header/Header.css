@@ -28,11 +28,13 @@
   font-weight: 600;
   transition: opacity 0.3s;
   margin-right: 150px;
+  
 }
 
 /* Estilo para páginas escuras */
 .header.dark .nav a {
   color: white;
+  
 }
 
 /* Estilo para páginas claras */

@@ -1,0 +1,38 @@
+.footer {
+  background-color: #111;
+  color: #fff;
+  padding: 20px 10px;
+  text-align: center;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-logo h2 {
+  margin-bottom: 5px;
+  font-size: 20px;
+  color: #f4c542;
+}
+
+.footer-links {
+  margin: 10px 0;
+}
+
+.footer-links a {
+  margin: 0 10px;
+  color: #ccc;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: #f4c542;
+}
+
+.footer-copy {
+  font-size: 12px;
+  color: #777;
+}

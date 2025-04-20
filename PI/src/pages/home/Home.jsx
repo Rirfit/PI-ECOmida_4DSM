@@ -29,7 +29,7 @@ export const Home = () => {
 
         </div>
         <div className="home-botao-container">
-          <button className='home-botao'>Veja nossas receitas</button>
+          <Link to="/Receitas" className="home-botao"><h4>Veja nossas receitas</h4> </Link>
         </div>
 
 

@@ -1,17 +1,24 @@
-import './Styles.css'
+import React from 'react';
+import './Footer.css';
 
-export function Footer() {
+const Footer = () => {
     return (
-        <footer className="container">
-            <div className="content">
-                <div className="info">
-                    <h3>Informações</h3>
-                    <p>Avenida Aguia de Haia</p>
-                    <p>+55 (11) 95158-0560</p>
+        <footer className="footer">
+            <div className="footer-container">
+                <div className="footer-logo">
+                    <h2>Não lembro o nome, lembrar de mudar isso</h2>
+                </div>
+                <div className="footer-links">
+                    <a href="/">Início</a>
+                    <a href="/Receitas">Receitas</a>
+                    <a href="/Sobre">Sobre</a>
+                </div>
+                <div className="footer-copy">
+                    <p>&copy; {new Date().getFullYear()} Todos os direitos reservados.</p>
                 </div>
             </div>
         </footer>
-    )
-}
+    );
+};
 
-export default Footer
+export default Footer;

@@ -9,3 +9,6 @@ body {
   background-color: transparent;
   display: block;
 }
+* {
+  box-sizing: border-box;
+}
