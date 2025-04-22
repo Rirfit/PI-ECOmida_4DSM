@@ -15,7 +15,7 @@ function Receitas() {
       <div className="pagina">
 
         <div className="receitas-container">
-          
+
           <Link to="/Sobremesas" className="categoria">
             <img src={sobremesas} alt="sobremesas" />
             <h4>Sobremesas</h4>

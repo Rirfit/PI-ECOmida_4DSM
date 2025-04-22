@@ -6,7 +6,7 @@ const Footer = () => {
         <footer className="footer">
             <div className="footer-container">
                 <div className="footer-logo">
-                    <h2>Não lembro o nome, lembrar de mudar isso</h2>
+                    <h2>Healthy Donation</h2>
                 </div>
                 <div className="footer-links">
                     <a href="/">Início</a>

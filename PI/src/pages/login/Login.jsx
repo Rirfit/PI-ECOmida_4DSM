@@ -23,9 +23,9 @@ const Login = () => {
             <div className='Esqueci'><h4>Esqueceu a senha?</h4></div>
 
             <Link to="/Cadastro" className="Cadastro"><h4>Cadastre-se</h4> </Link>
-
+            <Link to="/" >
             <div className="login-button-container"><button className="btn-login">Login</button></div>
-
+            </Link>
 
           </div>
         </div>
