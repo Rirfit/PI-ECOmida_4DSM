@@ -5,6 +5,10 @@ import Home from './pages/home/Home'
 import Sobre from './pages/sobre/Sobre'
 import Login from './pages/login/Login'
 import Receitas from './pages/receitas/Receitas'
+import Carnes from './pages/carnes/Carnes'
+import Aves from './pages/aves/Aves'
+import Sobremesas from './pages/sobremesas/Sobremesas'
+import Peixes from './pages/peixes/Peixes'
 
 
 function App() {
@@ -17,6 +21,10 @@ function App() {
           <Route path='Sobre' element={<Sobre />} />
           <Route path='Login' element={<Login />} />
           <Route path='Receitas' element={<Receitas />} />
+          <Route path='Carnes' element={<Carnes />} />
+          <Route path='Aves' element={<Aves />} />
+          <Route path='Sobremesas' element={<Sobremesas />} />
+          <Route path='Peixes' element={<Peixes />} />
         </Routes>
       </BrowserRouter>
     </>
