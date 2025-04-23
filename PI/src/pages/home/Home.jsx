@@ -4,6 +4,7 @@ import './Home.css'
 import Footer from '../../components/footer/Footer'
 import { Link } from 'react-router-dom';
 
+
 export const Home = () => {
   return (
     <>
@@ -36,6 +37,7 @@ export const Home = () => {
       </div>
 
       <div className="home-filtro-container">
+        
         <div className="home-filtro">
 
           <h1 className='htitulo2'>Transforme o mundo com cada garfada!</h1>

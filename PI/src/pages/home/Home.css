@@ -28,6 +28,8 @@
     padding: 60px;
     max-width: 800px;
     text-align: left;
+    margin-top: -30px;
+    
 }
 
 .home-titulo {
@@ -39,7 +41,7 @@
 }
 
 .Home-descrição p {
-    font-family: 'JetBrains', regular;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 36px;
     line-height: 1;
     white-space: pre-line;
@@ -71,7 +73,7 @@
     border-radius: 30px;
     transition: all 0.3s ease;
     border: none;
-    margin-top: -20px;
+    margin-top: 20px;
     margin-right: 50px;
 
 }
@@ -117,10 +119,6 @@
     right: 200px;
     width: 300px;
     height: 300px;
-    background-image: url('../../assets/prato.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
     opacity: 0.9;
     z-index: 0;
 }
@@ -191,4 +189,9 @@
 .home-botao2:hover {
     opacity: 0.9;
     transform: scale(1.03);
+}
+
+.H-Imagem-Lateral{
+    background-image: url('../../assets/Vegetables.jpg');
+    height: 100vh;
 }
