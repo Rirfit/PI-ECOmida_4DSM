@@ -1,13 +1,13 @@
+/* Container principal da página */
 .home-page {
-    position: flex;
     width: 100%;
     height: 100vh;
     overflow: hidden;
     font-family: 'Inter', sans-serif;
-}
-
-/* Imagem de fundo */
-.home-imagem {
+  }
+  
+  /* Imagem de fundo da página principal */
+  .home-imagem {
     position: absolute;
     top: 0;
     left: 0;
@@ -17,44 +17,47 @@
     background-size: cover;
     background-position: center;
     z-index: 0;
-    filter: brightness(0.25);
-}
-
-.home-conteudo {
+    filter: brightness(0.25); /* Diminui a luminosidade para o texto ser legível */
+  }
+  
+  /* Conteúdo principal */
+  .home-conteudo {
     position: relative;
     z-index: 1;
-
     color: white;
     padding: 60px;
     max-width: 800px;
     text-align: left;
     margin-top: -30px;
-    
-}
-
-.home-titulo {
+  }
+  
+  /* Título principal da página */
+  .home-titulo {
     font-family: 'JetBrains Mono', bold;
     font-weight: 800;
     font-size: 48px;
     margin-bottom: 20px;
     margin-left: 100px;
-}
-
-.Home-descrição p {
+  }
+  
+  /* Descrição da página */
+  .Home-descrição p {
     font-family: 'JetBrains Mono', monospace;
     font-size: 36px;
     line-height: 1;
     white-space: pre-line;
     margin-bottom: 30px;
     margin-left: 100px;
-}
-
-.home-botao-container {
+  }
+  
+  /* Container do botão */
+  .home-botao-container {
     display: flex;
     justify-content: flex-end;
-}
-
-.home-botao {
+  }
+  
+  /* Estilo do botão */
+  .home-botao {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,8 +67,6 @@
     font-weight: 400;
     color: white;
     z-index: 2;
-
-
     width: 572px;
     height: 142px;
     background: #4F6B46;
@@ -75,98 +76,64 @@
     border: none;
     margin-top: 20px;
     margin-right: 50px;
-
-}
-
-
-.home-botao:hover {
+  }
+  
+  /* Efeito de hover no botão */
+  .home-botao:hover {
     transform: scale(1.05);
     opacity: 0.9;
-}
-
-.home-filtro-container {
-    position: relative;
-    width: 100%;
-    height: 100vh;
+  }
+  
+  /* Wrapper para a seção de filtro */
+  .home-filtro-container {
     display: flex;
     justify-content: center;
     align-items: center;
     background: transparent;
-    margin-top: 50px;
-}
-
-.home-filtro {
-    position: relative;
     width: 100%;
-    height:920px;
-    background: rgba(255, 91, 2, 0.2);
-    border-radius: 20px;
-    padding: 60px;
-    color: white;
-    font-family: 'Inter', sans-serif;
+    padding: 0;
+  }
+  
+  /* Contêiner flexível para o filtro */
+  .home-filtro-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 1400px;
+    height: 920px;
+    overflow: hidden;
+    padding: 0;
+  }
+  
+  /* Lado esquerdo - conteúdo com fundo colorido */
+  .home-conteudo-filtro {
+    flex: 0.45;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 20px;
-    overflow: hidden;
-    margin-bottom: 150px;
-}
-
-.home-filtro::after {
-    content: "";
-    position: absolute;
-    bottom: 380px;
-    right: 200px;
-    width: 300px;
-    height: 300px;
-    opacity: 0.9;
-    z-index: 0;
-}
-
-.filtro-texto {
-    position: relative;
-    z-index: 1;
-}
-
-.htitulo2 {
-    /* Transforme o mundo com cada garfada! */
-
-
-    width: 981px;
-    height: 58px;
-    left: 234px;
-    top: 1182px;
-
-    font-family: 'Aleo';
-    font-style: normal;
-    font-weight: 800;
+    padding: 60px;
+    background-color: #f56464;
+    color: white;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* Título do filtro */
+  .htitulo2 {
+    font-family: 'Aleo', serif;
     font-size: 48px;
-    line-height: 58px;
-    /* identical to box height */
+    font-weight: 800;
     text-align: center;
-
-    margin-left: 250px;
-    color: #000000;
-
-}
-
-.htexto2 {
-    width: 949px;
-    height: 376px;
-    left: 119px;
-    top: 1322px;
-
-    font-family: 'JetBrains Mono';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 40px;
-    line-height: 53px;
-
-    margin-left: 70px;
-
-    color: #000000;
-}
-
+    margin-bottom: 20px;
+  }
+  
+  /* Texto do filtro */
+  .htexto2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    line-height: 1.6;
+    text-align: left;
+  }
+  
+/* Botão da seção de filtro */
 .home-botao2 {
     display: flex;
     align-items: center;
@@ -175,23 +142,31 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 24px;
     font-weight: 400;
-    color: white;
-
+    color: rgb(221, 76, 14);
     width: 572px;
     height: 142px;
-    background: #E84C3D;
+    background: #ffffff; /* Cor de fundo original */
     box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.25);
     border-radius: 30px;
     transition: all 0.3s ease;
-    margin-left: 450px;
-}
-
-.home-botao2:hover {
+    margin-left: 45px;
+    margin-top: 30px;
+    border: 1.5px solid rgb(0, 0, 0);
+  }
+  
+  /* Efeito de hover no botão */
+  .home-botao2:hover {
     opacity: 0.9;
     transform: scale(1.03);
-}
-
-.H-Imagem-Lateral{
+  }
+  
+  
+  /* Lado direito - imagem lateral */
+  .home-imagem-lateral {
+    flex: 0.55;
     background-image: url('../../assets/Vegetables.jpg');
-    height: 100vh;
-}
+    background-size: cover;
+    background-position: center;
+  }
+  
+  
