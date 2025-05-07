@@ -36,6 +36,16 @@ function Receitas() {
             <h4>Aves</h4>
           </Link>
         </div>
+
+        <Link to="/Sobremesas" className="categoria">
+            <img src={sobremesas} alt="sobremesas" />
+            <h4>Sobremesas</h4>
+          </Link>
+
+          <Link to="/Sobremesas" className="categoria">
+            <img src={sobremesas} alt="sobremesas" />
+            <h4>Sobremesas</h4>
+          </Link>
       </div>
       <Footer />
     </>

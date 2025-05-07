@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Cadastro.css';
+import logoBranca from '../../assets/Logo-Branca.png';
 
 const Cadastro = () => {
   return (
@@ -13,6 +14,10 @@ const Cadastro = () => {
 
         <div className="Cadastro-direito">
           <div className="Cadastro-formulario">
+          <Link to="/">
+  <img src={logoBranca} alt="logoBranca" className="logoC" />
+</Link>
+
             <h1 className="cadastro-titulo">Cadastre-se</h1>
 
             <div className="cadastro-texto"><h3>Nome</h3></div>
@@ -30,8 +35,12 @@ const Cadastro = () => {
             <div className="cadastro-button-container"><button className="cadastro-btn-cadastrar">Cadastrar</button></div>
 
             <Link to="/Login" className="Login"><h4>Já possui conta?</h4> </Link>
+            
           </div>
+
         </div>
+
+
       </div>
 
     </>
