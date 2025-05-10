@@ -98,7 +98,6 @@
   .home-filtro-wrapper {
     display: flex;
     width: 100%;
-    max-width: 1400px;
     height: 920px;
     overflow: hidden;
     padding: 0;

@@ -7,6 +7,7 @@ import peixeImg from '../../assets/peixe.jpeg'
 import carne from '../../assets/carne.jpg'
 import aves from '../../assets/aves.jpg'
 import sobremesas from '../../assets/sobremesas.jpg'
+import saladas from '../../assets/saladas.jpg'
 
 function Receitas() {
   return (
@@ -35,9 +36,13 @@ function Receitas() {
             <img src={aves} alt="Aves" />
             <h4>Aves</h4>
           </Link>
-        </div>
 
-        <Link to="/Sobremesas" className="categoria">
+          <Link to="/Sobremesas" className="categoria">
+            <img src={saladas} alt="saladas" />
+            <h4>Sobremesas</h4>
+          </Link>
+
+          <Link to="/Sobremesas" className="categoria">
             <img src={sobremesas} alt="sobremesas" />
             <h4>Sobremesas</h4>
           </Link>
@@ -46,6 +51,15 @@ function Receitas() {
             <img src={sobremesas} alt="sobremesas" />
             <h4>Sobremesas</h4>
           </Link>
+
+          <Link to="/Sobremesas" className="categoria">
+            <img src={sobremesas} alt="sobremesas" />
+            <h4>Sobremesas</h4>
+          </Link>
+
+        </div>
+
+
       </div>
       <Footer />
     </>

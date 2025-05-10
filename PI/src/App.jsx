@@ -9,6 +9,7 @@ import Carnes from './pages/carnes/Carnes'
 import Aves from './pages/aves/Aves'
 import Sobremesas from './pages/sobremesas/Sobremesas'
 import Peixes from './pages/peixes/Peixes'
+import MudarSenha from './pages/senha/MudarSenha'
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path='Aves' element={<Aves />} />
           <Route path='Sobremesas' element={<Sobremesas />} />
           <Route path='Peixes' element={<Peixes />} />
+          <Route path='MudarSenha' element={<MudarSenha />} />
         </Routes>
       </BrowserRouter>
     </>
