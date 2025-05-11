@@ -11,6 +11,7 @@ import Sobremesas from './pages/sobremesas/Sobremesas'
 import Peixes from './pages/peixes/Peixes'
 import MudarSenha from './pages/senha/MudarSenha'
 import Doacao from './pages/doação/Doacao'
+import Usuario from './pages/usuario/Usuario'
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path='Peixes' element={<Peixes />} />
           <Route path='MudarSenha' element={<MudarSenha />} />
           <Route path='Doacao'element={<Doacao/>} />
+           <Route path='Usuario'element={<Usuario/>} />
         </Routes>
       </BrowserRouter>
     </>

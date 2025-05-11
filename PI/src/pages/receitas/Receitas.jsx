@@ -43,7 +43,7 @@ function Receitas() {
           </Link>
 
           <Link to="/Sobremesas" className="categoria">
-            <img src={sobremesas} alt="sobremesas" />
+            <img src={sobremesas} alt="bebidas" />
             <h4>Sobremesas</h4>
           </Link>
 
@@ -53,6 +53,11 @@ function Receitas() {
           </Link>
 
           <Link to="/Sobremesas" className="categoria">
+            <img src={sobremesas} alt="sobremesas" />
+            <h4>Sobremesas</h4>
+          </Link>
+
+                    <Link to="/Sobremesas" className="categoria">
             <img src={sobremesas} alt="sobremesas" />
             <h4>Sobremesas</h4>
           </Link>
