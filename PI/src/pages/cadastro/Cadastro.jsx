@@ -5,45 +5,57 @@ import logoBranca from '../../assets/Logo-Branca.png';
 
 const Cadastro = () => {
   return (
-    <>
-      <div className="PagCadastro">
-        <div className="cadastro-imagem-lateral">
-          {/* O camminho da imagem esta no css*/}
+    <div className="cadastro-page">
+      {/* Imagem lateral */}
+      <div className="cadastro-side-image"></div>
 
-        </div>
+      {/* Área do formulário */}
+      <div className="cadastro-content">
+        <div className="cadastro-box">
 
-        <div className="Cadastro-direito">
-          <div className="Cadastro-formulario">
-          <Link to="/">
-  <img src={logoBranca} alt="logoBranca" className="logoC" />
-</Link>
+          {/* Logo */}
+          <div className="logo-link">
+            <Link to="/">
+              <img src={logoBranca} alt="Logo Branca" className="logo-img" />
+            </Link>
+          </div>
 
-            <h1 className="cadastro-titulo">Cadastre-se</h1>
+          {/* Título */}
+          <h1 className="cadastro-title">Cadastre-se</h1>
 
-            <div className="cadastro-texto"><h3>Nome</h3></div>
-            <div className="casdastro-input-container"><input type="text" placeholder="Digite seu nome" /></div>
+          {/* Formulário */}
+          <form className="cadastro-form">
+            <label className="cadastro-label">
+              <span>Nome</span>
+              <input type="text" placeholder="Digite seu nome" />
+            </label>
 
-            <div className="cadastro-texto"><h3>Email</h3></div>
-            <div className="casdastro-input-container"><input type="email" placeholder="Digite seu email" /></div>
+            <label className="cadastro-label">
+              <span>Email</span>
+              <input type="email" placeholder="Digite seu email" />
+            </label>
 
-            <div className="cadastro-texto"><h3>Senha</h3></div>
-            <div className="casdastro-input-container"><input type="password" placeholder="Digite sua senha" /></div>
+            <label className="cadastro-label">
+              <span>Senha</span>
+              <input type="password" placeholder="Digite sua senha" />
+            </label>
 
-            <div className="cadastro-texto"><h3>Confirme sua senha</h3></div>
-            <div className="casdastro-input-container"><input type="password" placeholder="Repita sua senha" /></div>
+            <label className="cadastro-label">
+              <span>Confirme sua senha</span>
+              <input type="password" placeholder="Repita sua senha" />
+            </label>
 
-            <div className="cadastro-button-container"><button className="cadastro-btn-cadastrar">Cadastrar</button></div>
+            <button type="submit" className="cadastro-btn">Cadastrar</button>
+          </form>
 
-            <Link to="/Login" className="Login"><h4>Já possui conta?</h4> </Link>
-            
+          {/* Link para login */}
+          <div className="cadastro-login-link">
+            <Link to="/Login">Já possui conta?</Link>
           </div>
 
         </div>
-
-
       </div>
-
-    </>
+    </div>
   );
 };
 

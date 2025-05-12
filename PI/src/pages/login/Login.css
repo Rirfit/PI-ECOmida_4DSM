@@ -1,56 +1,74 @@
-.PagLogin {
+/* Layout base (desktop) */
+.login-page {
   display: flex;
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
 }
 
-.login-imagem-lateral {
+.login-side-image {
   flex: 0.55;
   background-image: url('../../assets/VegetaisLogin.png');
-  /* imagem */
   background-size: cover;
   background-position: center;
 }
 
-.Login-direito {
+.login-content {
   flex: 0.45;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #E84C3D;
-  /* fundo */
 }
 
-.login-formulario {
+.login-box {
   width: 80%;
   max-width: 500px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
   color: white;
-  margin-top: -80px;
 }
 
-.login-titulo {
+.logo-link {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.logo-img {
+  width: 120px;
+  height: auto;
+}
+
+.login-title {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 800;
-  font-size: 96px;
+  font-size: 64px;
   line-height: 1.2;
+  text-align: center;
   margin-bottom: 20px;
-  align-self: center;
-  margin-left: 10px;
 }
 
-.login-texto h3 {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-label {
+  display: flex;
+  flex-direction: column;
   font-weight: 600;
   font-size: 16px;
 }
 
-.login-input-container input {
-  width: 100%;
+.login-label span {
+  margin-bottom: 5px;
+}
+
+.login-label input {
   height: 42px;
   background: #ffffff;
   border-radius: 30px;
@@ -59,69 +77,122 @@
   border: none;
 }
 
-
-
-
-
-
-.Esqueci {
-  font-family: 'inter', monospace;
-  font-weight: 800;
-  font-size: 18px;
-  line-height: 1.2;
-  margin-bottom: -40px;
-  align-self: center;
-  margin-left: 330px;
-  text-decoration: none;
-  color: rgb(255, 255, 255);
-  cursor: pointer;
-  transition: opacity 0.3s ease;
+.login-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.Esqueci:hover {
-  opacity: 0.7;
-}
-
-
-.Cadastro {
-  font-family: 'inter', monospace;
-  font-weight: 800;
-  font-size: 18px;
-  line-height: 1.2;
-  margin-bottom: 20px;
-  align-self: left;
-  margin-left: 380px;
-  text-decoration: none;
+.forgot-password,
+.signup-link {
+  font-weight: 700;
+  font-size: 14px;
   color: white;
-  cursor: pointer;
+  text-decoration: none;
   transition: opacity 0.3s ease;
 }
 
-.Cadastro:hover {
+.forgot-password:hover,
+.signup-link:hover {
   opacity: 0.7;
-}
-
-.login-button-container {
-  margin-top: -20px;
 }
 
 .btn-login {
-  width: 215px;
-  height: 60px;
+  width: 100%;
+  height: 50px;
   background: #4F7838;
-  border: 1px solid #000000;
+  border: none;
   border-radius: 30px;
   color: white;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  align-self: center;
-  margin-left: 315px;
   transition: all 0.2s ease;
 }
 
-/* Efeito ao pressionar */
 .btn-login:active {
-  transform: scale(0.95);
+  transform: scale(0.97);
   opacity: 0.8;
+}
+
+form {
+  max-width: 40rem;
+  margin: 0 !important;
+  padding: 30px;
+  background-color: #f9f9f900 !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  font-family: 'Arial', sans-serif;
+}
+
+/* === TABLET: 768px a 1023px === */
+@media (max-width: 1023px) {
+  .login-title {
+    font-size: 48px;
+  }
+
+  .login-box {
+    width: 90%;
+  }
+
+  .login-content {
+    padding: 1rem;
+  }
+}
+
+/* === MOBILE: até 767px === */
+@media (max-width: 767px) {
+  .login-page {
+    flex-direction: column;
+    background-image: url('../../assets/VegetaisLogin.png');
+    background-size: cover;
+    background-position: center;
+  }
+  .login-label span {
+    margin-bottom: 5px;
+    color: white;
+  }
+
+  .login-side-image {
+    display: none; /* some pois agora o bg vem na div pai */
+  }
+
+  .login-content {
+    flex: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* fundo escuro translúcido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 90%;
+    background-color: rgba(0, 0, 0, 0.7); /* fundo do formulário preto translúcido */
+    padding: 2rem;
+    border-radius: 16px;
+  }
+
+  .login-title {
+    font-size: 42px;
+  }
+
+  form {
+    padding: 0;
+    box-shadow: none;
+    background-color: transparent !important;
+  }
+
+  .login-links {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .btn-login {
+    height: 48px;
+  }
 }
