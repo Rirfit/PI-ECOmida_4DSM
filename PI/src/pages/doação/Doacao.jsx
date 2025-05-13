@@ -35,6 +35,8 @@ function Doacao() {
   return (
     <>
     <Header/>
+
+     <div className="Doacao">
     <form>
       <h2>Doação</h2>
 
@@ -76,14 +78,17 @@ function Doacao() {
       <label>CEP:</label>
       <input type="text" value={cep} onChange={handleCepChange} placeholder="Digite o CEP" maxLength="8" />
 
-      <label>Endereço:</label>
-      <input type="text" value={endereco.logradouro} readOnly />
-      <input type="text" value={endereco.bairro} readOnly />
-      <input type="text" value={endereco.localidade} readOnly />
-      <input type="text" value={endereco.uf} readOnly />
+     <label>Endereço:</label>
+<div className="endereco-grid">
+  <input type="text" value={endereco.logradouro} placeholder="Rua"  />
+  <input type="text" value={endereco.bairro} placeholder="Bairro"  />
+  <input type="text" value={endereco.localidade} placeholder="Cidade"  />
+  <input type="text" value={endereco.uf} placeholder="UF"  />
+</div>
 
       <button type="submit">Enviar Doação</button>
     </form>
+    </div>
     <Footer/>
     </>
   );

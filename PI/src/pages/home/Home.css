@@ -1,183 +1,200 @@
 /* Container principal da página */
 .home-page {
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    font-family: 'Inter', sans-serif;
-    
-  }
-  
-  /* Imagem de fundo da página principal */
-  .home-imagem {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 90%;
-    background-image: url('../../assets/VegetaisH.png');
-    background-size: cover;
-    background-position: center;
-    z-index: 0;
-    filter: brightness(0.25); /* Diminui a luminosidade para o texto ser legível */
-    
-  }
-  
-  /* Conteúdo principal */
-  .home-conteudo {
-    position: relative;
-    z-index: 1;
-    color: white;
-    padding: 60px;
-    max-width: 800px;
-    text-align: left;
-    margin-top: -30px;
-    
-  }
-  
-  
-  /* Título principal da página */
-  .home-titulo {
-    font-family: 'JetBrains Mono', bold;
-    font-weight: 800;
-    font-size: 48px;
-    margin-bottom: 20px;
-    margin-left: 100px;
-  }
-  
-  /* Descrição da página */
-  .Home-descrição p {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 36px;
-    line-height: 1;
-    white-space: pre-line;
-    margin-bottom: 30px;
-    margin-left: 100px;
-  }
-  
-  /* Container do botão */
-  .home-botao-container {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  /* Estilo do botão */
-  .home-botao {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 24px;
-    font-weight: 400;
-    color: white;
-    z-index: 2;
-    width: 572px;
-    height: 142px;
-    background: #4F6B46;
-    box-shadow: 3px 4px 10px rgba(255, 255, 255, 0.42);
-    border-radius: 30px;
-    transition: all 0.3s ease;
-    border: none;
-    margin-top: 20px;
-    margin-right: 50px;
-  }
-  
-  /* Efeito de hover no botão */
-  .home-botao:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
-  }
-  
-  /* Wrapper para a seção de filtro */
-  .home-filtro-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: transparent;
-    width: 100%;
-    padding: 0;
-    border: 7px solid #ffffff;
-    padding-bottom: 8px;
-  }
-  
-  /* Contêiner flexível para o filtro */
-  .home-filtro-wrapper {
-    display: flex;
-    width: 100%;
-    height: 920px;
-    overflow: hidden;
-    padding: 0;
-  }
-  
-  /* Lado esquerdo - conteúdo com fundo colorido */
-  .home-conteudo-filtro {
-    flex: 0.45;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 60px;
-    background-color: #f56464;
-    color: white;
-    font-family: 'Inter', sans-serif;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px; /* Espaço para o Header */
+}
 
-  }
-  
-  /* Título do filtro */
-  .htitulo2 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 48px;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  /* Texto do filtro */
-  .htexto2 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 24px;
-    line-height: 1.6;
-    text-align: left;
-  }
-  
+/* Imagem de fundo da página principal */
+.home-imagem {
+  position: fixed; /* Mudado de absolute para fixed */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../assets/VegetaisH.png');
+  background-size: cover;
+  background-position: center;
+  z-index: -1; /* Garante que fique atrás de tudo */
+  filter: brightness(0.25);
+}
+
+/* Restante do seu CSS permanece igual */
+.home-conteudo {
+  position: relative;
+  z-index: 1;
+    background-attachment: fixed;
+  color: white;
+  padding: 2rem;
+  max-width: 100%;
+  text-align: left;
+  margin-top: 0;
+}
+
+/* Título principal da página */
+.home-titulo {
+  font-family: 'JetBrains Mono', bold;
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1rem;
+  margin-left: 0;
+}
+
+/* Descrição da página */
+.Home-descrição p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1.25rem, 3vw, 2.25rem);
+  line-height: 1.3;
+  margin-bottom: 2rem;
+  margin-left: 0;
+}
+
+/* Container do botão */
+.home-botao-container {
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem;
+  margin-top: 2rem;
+}
+
+/* Estilo do botão */
+.home-botao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  color: white;
+  z-index: 2;
+  width: 100%;
+  max-width: 572px;
+  height: auto;
+  min-height: 80px;
+  padding: 1rem;
+  background: #4F6B46;
+  box-shadow: 3px 4px 10px rgba(255, 255, 255, 0.42);
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  border: none;
+  margin-right: 0;
+}
+
+/* Wrapper para a seção de filtro */
+.home-filtro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  width: 100%;
+  padding: 0;
+  border: 7px solid #ffffff;
+}
+
+/* Contêiner flexível para o filtro */
+.home-filtro-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 920px;
+}
+
+/* Lado esquerdo - conteúdo com fundo colorido */
+.home-conteudo-filtro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f56464;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Título do filtro */
+.htitulo2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Texto do filtro */
+.htexto2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  line-height: 1.6;
+  text-align: center;
+}
+
 /* Botão da seção de filtro */
 .home-botao2 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 24px;
-    font-weight: 400;
-    color: rgb(221, 76, 14);
-    width: 572px;
-    height: 142px;
-    background: #ffffff; /* Cor de fundo original */
-    box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 30px;
-    transition: all 0.3s ease;
-    margin-left: 45px;
-    margin-top: 30px;
-    border: 1.5px solid rgb(0, 0, 0);
-  }
-  
-  /* Efeito de hover no botão */
-  .home-botao2:hover {
-    opacity: 0.9;
-    transform: scale(1.03);
-  }
-  
-  
-  /* Lado direito - imagem lateral */
-  .home-imagem-lateral {
-    flex: 0.55;
-    background-image: url('../../assets/Vegetables.jpg');
-    background-size: cover;
-    background-position: center;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  color: rgb(221, 76, 14);
+  width: 100%;
+  max-width: 572px;
+  height: auto;
+  min-height: 80px;
+  padding: 1rem;
+  background: #ffffff;
+  box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  margin: 2rem auto 0;
+  border: 1.5px solid rgb(0, 0, 0);
+}
 
+/* Lado direito - imagem lateral */
+.home-imagem-lateral {
+  flex: 1;
+  min-height: 400px;
+  background-image: url('../../assets/Vegetables.jpg');
+  background-size: cover;
+  background-position: center;
+
+}
+
+/* Media Queries para telas maiores */
+@media (min-width: 768px) {
+  .home-filtro-wrapper {
+    flex-direction: row;
   }
   
+
+  .home-titulo, .Home-descrição p {
+    margin-left: 100px;
+  }
   
+  .home-botao-container {
+    justify-content: flex-end;
+    padding-right: 50px;
+  }
+  
+  .htexto2 {
+    text-align: left;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-conteudo {
+    max-width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-imagem-lateral {
+    display: none;
+  }
+}

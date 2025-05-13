@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './Usuario.css';
+import Header from '../../components/header/Header';
+import Footer from '../../components/footer/Footer';
 
 function Usuario() {
   const [nome, setNome] = useState('João da Silva');
@@ -19,6 +21,8 @@ function Usuario() {
   };
 
   return (
+    <>
+    <Header/>
     <div className="user-container">
       <h2>Minha Conta</h2>
       <div className="user-info">
@@ -52,6 +56,8 @@ function Usuario() {
         <button type="submit">Salvar</button>
       </form>
     </div>
+    <Footer/>
+    </>
   );
 }
 
