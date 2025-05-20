@@ -17,7 +17,7 @@ function Receitas() {
 
         <div className="receitas-container">
 
-          <Link to="/Sobremesas" className="categoria">
+          <Link to="/Bolo" className="categoria">
             <img src={sobremesas} alt="sobremesas" />
             <h4>Sobremesas</h4>
           </Link>
@@ -42,25 +42,6 @@ function Receitas() {
             <h4>Sobremesas</h4>
           </Link>
 
-          <Link to="/Sobremesas" className="categoria">
-            <img src={sobremesas} alt="bebidas" />
-            <h4>Sobremesas</h4>
-          </Link>
-
-          <Link to="/Sobremesas" className="categoria">
-            <img src={sobremesas} alt="sobremesas" />
-            <h4>Sobremesas</h4>
-          </Link>
-
-          <Link to="/Sobremesas" className="categoria">
-            <img src={sobremesas} alt="sobremesas" />
-            <h4>Sobremesas</h4>
-          </Link>
-
-                    <Link to="/Sobremesas" className="categoria">
-            <img src={sobremesas} alt="sobremesas" />
-            <h4>Sobremesas</h4>
-          </Link>
 
         </div>
 

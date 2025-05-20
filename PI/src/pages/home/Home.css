@@ -83,6 +83,7 @@
   transition: all 0.3s ease;
   border: none;
   margin-right: 0;
+  margin: 50px 0;
 }
 
 /* Wrapper para a seção de filtro */
@@ -93,7 +94,8 @@
   background: transparent;
   width: 100%;
   padding: 0;
-  border: 7px solid #ffffff;
+  border: 20px solid #ffffff;
+  
 }
 
 /* Contêiner flexível para o filtro */

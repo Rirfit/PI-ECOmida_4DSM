@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import './Bolo.css';
-import { FaClock, FaUtensils, FaUserFriends } from 'react-icons/fa'; // Importando ícones (opcional)
 import bolo from '../../assets/bolo.jpg'
+import Header from '../../components/header/Header';
 function Bolo() {
   const [porcoes, setPorcoes] = useState(8); // Estado para porções (exemplo)
 
   return (
+    <>
+    <Header/>
     <div className="pagina-receita">
 {/* Cabeçalho com título e imagem */}
 <header className="receita-header">
@@ -19,15 +21,12 @@ function Bolo() {
       {/* Informações rápidas (tempo, dificuldade, porções) */}
       <div className="receita-info">
         <div className="info-item">
-          <span className="info-icone"><FaClock /></span>
           <p>40 min</p>
         </div>
         <div className="info-item">
-          <span className="info-icone">⚙️</span>
           <p>Fácil</p>
         </div>
         <div className="info-item">
-          <span className="info-icone"><FaUserFriends /></span>
           <p>{porcoes} porções</p>
         </div>
       </div>
@@ -62,6 +61,8 @@ function Bolo() {
         </p>
       </section>
     </div>
+
+    </>
   );
 }
 

@@ -1,34 +1,57 @@
+/* Container que envolverá a imagem e o texto */
+.container-imagem {
+    display: flex;
+    flex-direction: row;  /* Para manter imagem e texto lado a lado */
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 20px 5%;
+    box-sizing: border-box;
+}
+
+/* Texto responsivo */
 .texto {
-    width: 949px;
-    height: 376px;
-    left: 119px;
-    top: 1322px;
-
-
-    font-family: 'JetBrains Mono';
+    flex: 1;  /* O texto vai ocupar o máximo de espaço disponível */
+    font-family: 'JetBrains Mono', monospace;
     font-style: normal;
     font-weight: 400;
-    font-size: 26px;
-    line-height: 30px;
-    margin-top: 130px;
-
-    margin-left: 90px;
-
+    font-size: 1.625rem; /* 26px */
+    line-height: 1.5;
+    margin: 0;
+    padding: 0 20px 0 0; /* Adiciona um espaço à direita */
     color: #000000;
 }
 
+/* Imagem ao lado do texto */
 .imagemS {
-    content: "";
-    position: absolute;
-    bottom: 230px;
-    right: 250px;
-    width: 300px;
-    height: 300px;
-    background-image: url(../../assets/sobre.png);
+    width: 20vw;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    background-image: url('../../assets/sobre.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     opacity: 0.9;
     z-index: 0;
+}
 
+/* Em telas menores, ajustamos o layout */
+@media (max-width: 768px) {
+    .container-imagem {
+        flex-direction: column;  /* Alinha a imagem e o texto verticalmente */
+        text-align: center;  /* Centraliza o texto */
+    }
+
+    .imagemS {
+        width: 60vw;  /* Reduz a imagem em telas menores */
+        max-width: 200px;  /* Limita o tamanho máximo da imagem */
+        margin-top: 20px;  /* Dá um espaço entre o texto e a imagem */
+    }
+
+    .texto {
+        font-size: 1.2rem;
+        margin-top: 4vh;
+        padding: 0 4vw;
+    }
 }
