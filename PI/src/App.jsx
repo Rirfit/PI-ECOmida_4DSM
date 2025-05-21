@@ -13,6 +13,7 @@ import MudarSenha from './pages/senha/MudarSenha'
 import Doacao from './pages/doação/Doacao'
 import Usuario from './pages/usuario/Usuario'
 import Bolo from './pages/sobremesas/Bolo'
+import EmailSenha from './pages/senha/EmailSenha'
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path='Doacao'element={<Doacao/>} />
           <Route path='Usuario'element={<Usuario/>} />
           <Route path='Bolo'element={<Bolo/>} />
+          <Route path='EmailSenha'element={<EmailSenha/>} />
         </Routes>
       </BrowserRouter>
     </>
