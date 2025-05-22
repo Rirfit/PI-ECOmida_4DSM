@@ -28,7 +28,7 @@ const Login = () => {
             </label>
 
             <div className="login-links">
-              <Link to="/MudarSenha" className="forgot-password">Esqueceu a senha?</Link>
+              <Link to="/EmailSenha" className="forgot-password">Esqueceu a senha?</Link>
               <Link to="/Cadastro" className="signup-link">Cadastre-se</Link>
             </div>
 
