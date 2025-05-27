@@ -8,6 +8,8 @@
   font-family: 'Roboto', sans-serif;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
 .user-container:hover {
@@ -37,33 +39,14 @@
   color: #555;
 }
 
-/* Formulário de senha */
-.form-senha {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+/* Botão de alterar senha */
+.alterar-senha-container {
+  text-align: center;
+  margin-top: 20px;
 }
 
-/* Campos de input */
-.form-senha input {
-  padding: 12px 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.form-senha input:focus {
-  border-color: #1976d2;
-  box-shadow: 0 0 8px rgba(25, 118, 210, 0.4);
-  outline: none;
-}
-
-/* Botão */
-.form-senha button {
-  padding: 14px;
+.alterar-senha-botao {
+  padding: 14px 20px;
   background-color: #1976d2;
   color: white;
   font-size: 16px;
@@ -74,34 +57,16 @@
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.form-senha button:hover {
+.alterar-senha-botao:hover {
   background-color: #125a9c;
   transform: translateY(-2px);
 }
 
-.form-senha button:disabled {
-  background-color: #c1c1c1;
-  cursor: not-allowed;
+.alterar-senha-botao:active {
+  transform: translateY(1px);
 }
 
-.form-senha button:active {
-  transform: translateY(2px);
-}
-
-/* Erro */
-.form-senha .error {
-  color: #d32f2f;
-  font-size: 14px;
-  margin-top: -10px;
-  margin-bottom: 10px;
-}
-
-/* Efeitos de transição para o container */
-.user-container {
-  opacity: 0;
-  animation: fadeIn 0.5s ease-out forwards;
-}
-
+/* Animação de entrada */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -126,13 +91,9 @@
     font-size: 14px;
   }
 
-  .form-senha input,
-  .form-senha button {
+  .alterar-senha-botao {
     font-size: 14px;
-  }
-
-  .form-senha button {
-    padding: 12px;
+    padding: 12px 16px;
   }
 }
 
@@ -150,17 +111,8 @@
     padding: 15px;
   }
 
-  .form-senha input,
-  .form-senha button {
+  .alterar-senha-botao {
     font-size: 14px;
-    padding: 10px;
-  }
-
-  .form-senha {
-    gap: 10px;
-  }
-
-  .form-senha button {
-    font-size: 16px;
+    padding: 10px 14px;
   }
 }
