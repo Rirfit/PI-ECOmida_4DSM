@@ -16,7 +16,7 @@ function Carnes() {
 
                 <div className="receitas-container">
 
-                    <Link to="/Sobremesas" className="categoria">
+                    <Link to="/Panqueca" className="categoria">
                         <img src={panqueca} alt="panqueca" />
                         <h4>Panqueca de carne</h4>
                     </Link>

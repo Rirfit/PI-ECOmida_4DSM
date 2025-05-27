@@ -14,7 +14,7 @@ import Doacao from './pages/doação/Doacao'
 import Usuario from './pages/usuario/Usuario'
 import Bolo from './pages/sobremesas/Bolo'
 import EmailSenha from './pages/senha/EmailSenha'
-
+import Panqueca from './pages/carnes/Panqueca'
 
 function App() {
   return (
@@ -35,6 +35,7 @@ function App() {
           <Route path='Usuario'element={<Usuario/>} />
           <Route path='Bolo'element={<Bolo/>} />
           <Route path='EmailSenha'element={<EmailSenha/>} />
+          <Route path='Panqueca'element={<Panqueca/>} />
         </Routes>
       </BrowserRouter>
     </>
