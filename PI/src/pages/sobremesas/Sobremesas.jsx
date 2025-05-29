@@ -3,10 +3,10 @@ import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import { Link } from 'react-router-dom';
 
-import legumes from '../../assets/legumes-carne.jpg'
-import lagarto from '../../assets/lagarto-molho-madeira.jpg'
-import panqueca from '../../assets/panqueca-de-carne.jpg'
-import picanha from '../../assets/bolo.jpg'
+import sorvete from '../../assets/sorvete de morango.jpg'
+import torta from '../../assets/torta-de-limao.jpg'
+import bolo from '../../assets/bolo.jpg'
+import pave from '../../assets/pave.jpeg'
 
 function Sobremesas() {
     return (
@@ -17,23 +17,23 @@ function Sobremesas() {
                 <div className="receitas-container">
 
                     <Link to="/Bolo" className="categoria">
-                        <img src={panqueca} alt="panqueca" />
-                        <h4>Panqueca de carne</h4>
+                        <img src={bolo} alt="Bolo" />
+                        <h4>Bolo de chocolate</h4>
                     </Link>
 
-                    <Link to="/Carnes" className="categoria">
-                        <img src={lagarto} alt="lagarto" />
-                        <h4>Lagarto ao molho madeira</h4>
+                    <Link to="/" className="categoria">
+                        <img src={torta} alt="torta de limão" />
+                        <h4>Torta de limão</h4>
                     </Link>
 
-                    <Link to="/Peixes" className="categoria">
-                        <img src={legumes} alt="legumes" />
-                        <h4>Legumes com carne</h4>
+                    <Link to="/" className="categoria">
+                        <img src={sorvete} alt="sorvete de moramgo" />
+                        <h4>Sorvete de morango</h4>
                     </Link>
 
                     <Link to="/Aves" className="categoria">
-                        <img src={picanha} alt="picanha" />
-                        <h4>Picanha na manteiga</h4>
+                        <img src={pave} alt="pave" />
+                        <h4>Pave</h4>
                     </Link>
                 </div>
             </div>

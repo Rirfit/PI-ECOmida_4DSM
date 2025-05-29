@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import peixeImg from '../../assets/peixe.jpeg'
 import carne from '../../assets/carne.jpg'
 import aves from '../../assets/aves.jpg'
-import sobremesas from '../../assets/sobremesas.jpg'
+import pave from '../../assets/pave.jpeg'
 import saladas from '../../assets/saladas.jpg'
 
 function Receitas() {
@@ -17,8 +17,8 @@ function Receitas() {
 
         <div className="receitas-container">
 
-          <Link to="/Bolo" className="categoria">
-            <img src={sobremesas} alt="sobremesas" />
+          <Link to="/Sobremesas" className="categoria">
+            <img src={pave} alt="sobremesas" />
             <h4>Sobremesas</h4>
           </Link>
 
