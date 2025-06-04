@@ -1,54 +1,88 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Cadastro.css';
 import logoBranca from '../../assets/Logo-Branca.png';
 
 const Cadastro = () => {
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    senha: '',
+    confirmar: ''
+  });
+  const navigate = useNavigate();
+
+  const [mensagem, setMensagem] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const resposta = await fetch('http://localhost:5000/cadastro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const dados = await resposta.json();
+
+      if (resposta.ok) {
+        setFormData({ nome: '', email: '', senha: '', confirmar: '' });
+        setMensagem('✅ Cadastro realizado com sucesso!');
+        navigate('/Login');
+      } else {
+        setMensagem(`❌ ${dados.erro}`);
+      }
+    } catch (erro) {
+      setMensagem('❌ Erro ao conectar com o servidor.');
+    }
+  };
+
   return (
     <div className="cadastro-page">
-      {/* Imagem lateral */}
       <div className="cadastro-side-image"></div>
 
-      {/* Área do formulário */}
       <div className="cadastro-content">
         <div className="cadastro-box">
 
-          {/* Logo */}
           <div className="logo-link">
             <Link to="/">
               <img src={logoBranca} alt="Logo Branca" className="logo-img" />
             </Link>
           </div>
 
-          {/* Título */}
           <h1 className="cadastro-title">Cadastre-se</h1>
 
-          {/* Formulário */}
-          <form className="cadastro-form">
+          <form className="cadastro-form" onSubmit={handleSubmit}>
             <label className="cadastro-label">
               <span>Nome</span>
-              <input type="text" placeholder="Digite seu nome" />
+              <input type="text" name="nome" value={formData.nome} onChange={handleChange} placeholder="Digite seu nome" required />
             </label>
 
             <label className="cadastro-label">
               <span>Email</span>
-              <input type="email" placeholder="Digite seu email" />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Digite seu email" required />
             </label>
 
             <label className="cadastro-label">
               <span>Senha</span>
-              <input type="password" placeholder="Digite sua senha" />
+              <input type="password" name="senha" value={formData.senha} onChange={handleChange} placeholder="Digite sua senha" required />
             </label>
 
             <label className="cadastro-label">
               <span>Confirme sua senha</span>
-              <input type="password" placeholder="Repita sua senha" />
+              <input type="password" name="confirmar" value={formData.confirmar} onChange={handleChange} placeholder="Repita sua senha" required />
             </label>
 
             <button type="submit" className="cadastro-btn">Cadastrar</button>
           </form>
 
-          {/* Link para login */}
+          {mensagem && <p className="mensagem-feedback">{mensagem}</p>}
+
           <div className="cadastro-login-link">
             <Link to="/Login">Já possui conta?</Link>
           </div>
