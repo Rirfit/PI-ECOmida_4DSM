@@ -21,17 +21,17 @@ function Sobremesas() {
                         <h4>Bolo de chocolate</h4>
                     </Link>
 
-                    <Link to="/" className="categoria">
+                    <Link to="/TortaLimao" className="categoria">
                         <img src={torta} alt="torta de limão" />
                         <h4>Torta de limão</h4>
                     </Link>
 
-                    <Link to="/" className="categoria">
+                    <Link to="/SorveteMorango" className="categoria">
                         <img src={sorvete} alt="sorvete de moramgo" />
                         <h4>Sorvete de morango</h4>
                     </Link>
 
-                    <Link to="/Aves" className="categoria">
+                    <Link to="/Pave" className="categoria">
                         <img src={pave} alt="pave" />
                         <h4>Pave</h4>
                     </Link>

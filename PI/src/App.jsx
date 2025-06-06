@@ -15,6 +15,9 @@ import Usuario from './pages/usuario/Usuario'
 import Bolo from './pages/sobremesas/Bolo'
 import EmailSenha from './pages/senha/EmailSenha'
 import Panqueca from './pages/carnes/Panqueca'
+import Pave from './pages/sobremesas/Pave'
+import SorveteMorango from './pages/sobremesas/SorveteMorango'
+import TortaLimao from './pages/sobremesas/TortaLimao'
 
 function App() {
   return (
@@ -36,6 +39,9 @@ function App() {
           <Route path='Bolo'element={<Bolo/>} />
           <Route path='EmailSenha'element={<EmailSenha/>} />
           <Route path='Panqueca'element={<Panqueca/>} />
+          <Route path='Pave'element={<Pave/>} />
+          <Route path='SorveteMorango'element={<SorveteMorango/>} />
+          <Route path='TortaLimao'element={<TortaLimao/>} />
         </Routes>
       </BrowserRouter>
     </>
