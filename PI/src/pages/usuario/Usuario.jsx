@@ -22,7 +22,7 @@ function Usuario() {
         <div className="alterar-senha-container">
           <button
             className="alterar-senha-botao"
-            onClick={() => navigate('/alterar-senha')}
+            onClick={() => navigate('/MudarSenha')}
           >
             Alterar Senha
           </button>

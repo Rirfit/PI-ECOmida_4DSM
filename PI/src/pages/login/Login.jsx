@@ -23,6 +23,7 @@ const Login = () => {
 
       if (resposta.ok) {
         localStorage.setItem('token', dados.token);
+        localStorage.setItem('nome', data.usuario.nome);
         setMensagem('Login realizado com sucesso!');
         navigate('/Usuario');
       } else {

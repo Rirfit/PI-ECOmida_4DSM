@@ -28,6 +28,8 @@ db = client[os.getenv("DB_NAME")]
 usuarios_collection = db['usuarios']
 receitas_collection = db['receitas']
 tokens_reset_collection = db['tokens_reset']
+doacoes_collection = db['doacoes']
+
 
 # Middleware para verificar token JWT
 def verificar_token(f):
@@ -81,7 +83,7 @@ def enviar_email_reset(email, token):
         remetente_email = "seu_email@gmail.com"  # Configure aqui
         remetente_senha = "sua_senha_app"  # Configure aqui
         
-        mensagem = MimeMultipart()
+        mensagem = MIMEMultipart()
         mensagem['From'] = remetente_email
         mensagem['To'] = email
         mensagem['Subject'] = "Redefinição de Senha - ECOmida"
@@ -102,7 +104,7 @@ def enviar_email_reset(email, token):
         Equipe ECOmida
         """
         
-        mensagem.attach(MimeText(corpo, 'plain'))
+        mensagem.attach(MIMEText(corpo, 'plain'))
         
         servidor = smtplib.SMTP(smtp_server, smtp_port)
         servidor.starttls()
@@ -480,6 +482,55 @@ def metodo_nao_permitido(error):
 def erro_interno(error):
     return jsonify({'erro': 'Erro interno do servidor'}), 500
 
+# =================== ROTAS DE DOAÇÕES ===================
+
+@app.route('/doacoes', methods=['POST'])
+@verificar_token
+def registrar_doacao():
+    try:
+        dados = request.get_json()
+        tipo = dados.get('tipo')
+        valor = dados.get('valor')
+        descricao = dados.get('descricao', '').strip()
+
+        if tipo not in ['comida', 'dinheiro']:
+            return jsonify({'erro': 'Tipo de doação deve ser "comida" ou "dinheiro"'}), 400
+        if not valor:
+            return jsonify({'erro': 'Valor é obrigatório'}), 400
+
+        doacao = {
+            'usuario_id': str(request.usuario_atual['_id']),
+            'tipo': tipo,
+            'valor': valor,
+            'descricao': descricao,
+            'data': datetime.datetime.utcnow()
+        }
+        resultado = doacoes_collection.insert_one(doacao)
+        return jsonify({'mensagem': 'Doação registrada com sucesso!', 'doacao_id': str(resultado.inserted_id)}), 201
+    except Exception as e:
+        return jsonify({'erro': 'Erro ao registrar doação'}), 500
+
+@app.route('/doacoes', methods=['GET'])
+@verificar_token
+def listar_doacoes():
+    try:
+        doacoes = list(doacoes_collection.find())
+        for d in doacoes:
+            d['_id'] = str(d['_id'])
+        return jsonify({'doacoes': doacoes}), 200
+    except Exception as e:
+        return jsonify({'erro': 'Erro ao listar doações'}), 500
+
+@app.route('/pontos-entrega', methods=['GET'])
+def listar_pontos_entrega():
+    # Exemplo estático, substitua por busca no banco se desejar
+    pontos = [
+        {"nome": "ONG Esperança", "endereco": "Rua A, 123"},
+        {"nome": "Centro Solidário", "endereco": "Av. B, 456"}
+    ]
+    return jsonify({'pontos_entrega': pontos}), 200
+
+
 # =================== INICIALIZAÇÃO ===================
 
 def inicializar_dados():
@@ -490,6 +541,9 @@ def inicializar_dados():
         receitas_collection.create_index("categoria")
         receitas_collection.create_index("titulo")
         tokens_reset_collection.create_index("token")
+        doacoes_collection.create_index("usuario_id")
+        
+    
         
         print("✅ Índices do banco de dados criados/verificados")
         
@@ -532,7 +586,6 @@ def inicializar_dados():
 if __name__ == '__main__':
     print("🚀 Iniciando servidor ECOmida...")
     inicializar_dados()
-    print("✅ Servidor rodando em http://localhost:5000")
     print("📝 Rotas disponíveis:")
     print("   POST /cadastro - Cadastrar usuário")
     print("   POST /login - Fazer login")
@@ -545,4 +598,5 @@ if __name__ == '__main__':
     print("   GET /receitas/<id> - Obter receita específica")
     print("   POST /receitas - Criar receita (auth)")
     print("   GET /health - Health check")
+    print("✅ Servidor rodando em http://localhost:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)

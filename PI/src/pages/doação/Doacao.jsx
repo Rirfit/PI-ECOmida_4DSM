@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-
 import 'leaflet/dist/leaflet.css';
 import './Doacao.css';
-
 import L from 'leaflet';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
@@ -14,7 +12,6 @@ import Footer from '../../components/footer/Footer';
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
 
-// Lista dos pontos fixos de entrega
 const pontosDeEntrega = [
   { id: 1, nome: "Ponto Central", lat: -23.55052, lng: -46.633308 },
   { id: 2, nome: "Ponto Zona Sul", lat: -23.60000, lng: -46.70000 },
@@ -25,13 +22,58 @@ function Doacao() {
   const [tipoDoacao, setTipoDoacao] = useState('');
   const [medida, setMedida] = useState('gramas');
   const [posicaoSelecionada, setPosicaoSelecionada] = useState(null);
+  const [valorDinheiro, setValorDinheiro] = useState('');
+  const [alimento, setAlimento] = useState('');
+  const [quantidade, setQuantidade] = useState('');
+  const [nome, setNome] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [mensagem, setMensagem] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Monta os dados conforme o tipo de doação
+    let doacao = {
+      type: tipoDoacao,
+      amount: tipoDoacao === 'dinheiro'
+        ? valorDinheiro
+        : `${quantidade} ${medida} de ${alimento}`,
+      description: tipoDoacao === 'comida' && posicaoSelecionada
+        ? `Ponto: ${posicaoSelecionada.nome} (${posicaoSelecionada.lat}, ${posicaoSelecionada.lng})`
+        : '',
+      nome,
+      cpf
+    };
+
+    try {
+      // Pegue o token JWT do localStorage (ajuste conforme seu login)
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/doacoes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(doacao)
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMensagem('Doação registrada com sucesso!');
+      } else {
+        setMensagem(data.erro || data.msg || 'Erro ao registrar doação');
+      }
+    } catch {
+      setMensagem('Erro ao conectar com o servidor');
+    }
+  };
 
   return (
     <>
       <Header />
 
       <div className="Doacao">
-        <form>
+        <form onSubmit={handleSubmit}>
           <h2>Doação</h2>
 
           <label>Tipo de doação:</label>
@@ -44,16 +86,31 @@ function Doacao() {
           {tipoDoacao === 'dinheiro' && (
             <>
               <label>Valor (R$):</label>
-              <input type="number" placeholder="Ex: 50.00" />
+              <input
+                type="number"
+                placeholder="Ex: 50.00"
+                value={valorDinheiro}
+                onChange={e => setValorDinheiro(e.target.value)}
+              />
             </>
           )}
 
           {tipoDoacao === 'comida' && (
             <>
               <label>Alimento:</label>
-              <input type="text" placeholder="Ex: Arroz" />
+              <input
+                type="text"
+                placeholder="Ex: Arroz"
+                value={alimento}
+                onChange={e => setAlimento(e.target.value)}
+              />
               <label>Quantidade:</label>
-              <input type="number" placeholder="Ex: 500" />
+              <input
+                type="number"
+                placeholder="Ex: 500"
+                value={quantidade}
+                onChange={e => setQuantidade(e.target.value)}
+              />
               <select value={medida} onChange={(e) => setMedida(e.target.value)}>
                 <option value="gramas">gramas</option>
                 <option value="quilos">quilos</option>
@@ -109,12 +166,23 @@ function Doacao() {
           <h3>Seus dados</h3>
 
           <label>Nome:</label>
-          <input type="text" placeholder="Seu nome" />
+          <input
+            type="text"
+            placeholder="Seu nome"
+            value={nome}
+            onChange={e => setNome(e.target.value)}
+          />
 
           <label>CPF:</label>
-          <input type="text" placeholder="000.000.000-00" />
+          <input
+            type="text"
+            placeholder="000.000.000-00"
+            value={cpf}
+            onChange={e => setCpf(e.target.value)}
+          />
 
           <button type="submit">Enviar Doação</button>
+          {mensagem && <p style={{ marginTop: '10px', color: 'green' }}>{mensagem}</p>}
         </form>
       </div>
 
