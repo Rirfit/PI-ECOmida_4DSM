@@ -154,7 +154,7 @@ def cadastrar():
             'nome': nome,
             'email': email,
             'senha': hash_senha,
-            'data_cadastro': datetime.datetime.utcnow(),
+            'data_cadastro': datetime.datetime.now(datetime.UTC),
             'ativo': True
         }
         
@@ -189,7 +189,7 @@ def login():
         token = jwt.encode({
             'id': str(usuario['_id']),
             'email': usuario['email'],
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=24)
         }, app.config['SECRET_KEY'], algorithm='HS256')
 
         return jsonify({
@@ -230,7 +230,7 @@ def esqueci_senha():
         tokens_reset_collection.insert_one({
             'email': email,
             'token': token_reset,
-            'criado_em': datetime.datetime.utcnow(),
+            'criado_em': datetime.datetime.now(datetime.UTC),
             'expirado': False
         })
 
@@ -276,7 +276,7 @@ def redefinir_senha():
             return jsonify({'erro': 'Token inválido ou expirado'}), 400
 
         # Verificar se token não expirou (1 hora)
-        if datetime.datetime.utcnow() - token_doc['criado_em'] > datetime.timedelta(hours=1):
+        if datetime.datetime.now(datetime.UTC) - token_doc['criado_em'] > datetime.timedelta(hours=1):
             tokens_reset_collection.update_one(
                 {'_id': token_doc['_id']},
                 {'$set': {'expirado': True}}
@@ -303,9 +303,9 @@ def redefinir_senha():
 
 # =================== ROTAS DE USUÁRIO ===================
 
-@app.route('/perfil', methods=['GET'])
+@app.route('/usuario', methods=['GET'])
 @verificar_token
-def obter_perfil():
+def obter_usuario():
     try:
         usuario = request.usuario_atual
         return jsonify({
@@ -319,25 +319,30 @@ def obter_perfil():
     except Exception as e:
         return jsonify({'erro': 'Erro interno do servidor'}), 500
 
-@app.route('/perfil', methods=['PUT'])
+@app.route('/usuario', methods=['PUT'])
 @verificar_token
-def atualizar_perfil():
+def atualizar_usuario():
     try:
         dados = request.get_json()
         nome = dados.get('nome', '').strip()
-        
-        if not nome:
-            return jsonify({'erro': 'Nome é obrigatório'}), 400
-            
+        email = dados.get('email', '').strip().lower()
+
+        if not nome or not email:
+            return jsonify({'erro': 'Nome e email são obrigatórios'}), 400
+
         if len(nome) < 2:
             return jsonify({'erro': 'Nome deve ter pelo menos 2 caracteres'}), 400
 
+        # (Opcional) Validação de email
+        if not validar_email(email):
+            return jsonify({'erro': 'Email inválido'}), 400
+
         usuarios_collection.update_one(
             {'_id': request.usuario_atual['_id']},
-            {'$set': {'nome': nome}}
+            {'$set': {'nome': nome, 'email': email}}
         )
 
-        return jsonify({'mensagem': 'Perfil atualizado com sucesso!'}), 200
+        return jsonify({'mensagem': 'Usuário atualizado com sucesso!'}), 200
 
     except Exception as e:
         return jsonify({'erro': 'Erro interno do servidor'}), 500
@@ -444,7 +449,7 @@ def criar_receita():
             'dificuldade': dados.get('dificuldade', 'média'),
             'autor_id': str(request.usuario_atual['_id']),
             'autor_nome': request.usuario_atual['nome'],
-            'data_criacao': datetime.datetime.utcnow(),
+            'data_criacao': datetime.datetime.now(datetime.UTC),
             'ativa': True
         }
 
@@ -464,7 +469,7 @@ def criar_receita():
 def health_check():
     return jsonify({
         'status': 'ok',
-        'timestamp': datetime.datetime.utcnow().isoformat(),
+        'timestamp': datetime.datetime.now(datetime.UTC).isoformat(),
         'version': '1.0.0'
     }), 200
 
@@ -503,7 +508,7 @@ def registrar_doacao():
             'tipo': tipo,
             'valor': valor,
             'descricao': descricao,
-            'data': datetime.datetime.utcnow()
+            'data': datetime.datetime.now(datetime.UTC)
         }
         resultado = doacoes_collection.insert_one(doacao)
         return jsonify({'mensagem': 'Doação registrada com sucesso!', 'doacao_id': str(resultado.inserted_id)}), 201
@@ -560,7 +565,7 @@ def inicializar_dados():
                     'porcoes': 4,
                     'dificuldade': 'fácil',
                     'autor_nome': 'Sistema',
-                    'data_criacao': datetime.datetime.utcnow(),
+                    'data_criacao': datetime.datetime.now(datetime.UTC),
                     'ativa': True
                 },
                 {
@@ -573,7 +578,7 @@ def inicializar_dados():
                     'porcoes': 6,
                     'dificuldade': 'fácil',
                     'autor_nome': 'Sistema',
-                    'data_criacao': datetime.datetime.utcnow(),
+                    'data_criacao': datetime.datetime.now(datetime.UTC),
                     'ativa': True
                 }
             ]
@@ -591,8 +596,8 @@ if __name__ == '__main__':
     print("   POST /login - Fazer login")
     print("   POST /esqueci-senha - Solicitar reset de senha")
     print("   POST /redefinir-senha - Redefinir senha")
-    print("   GET /perfil - Obter perfil (auth)")
-    print("   PUT /perfil - Atualizar perfil (auth)")
+    print("   GET /usuario - Obter usuario (auth)")
+    print("   PUT /usuario - Atualizar usuario (auth)")
     print("   POST /alterar-senha - Alterar senha (auth)")
     print("   GET /receitas - Listar receitas")
     print("   GET /receitas/<id> - Obter receita específica")

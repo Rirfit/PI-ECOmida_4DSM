@@ -12,7 +12,7 @@ const Header = () => {
   function handleLogout() {
     localStorage.removeItem('token');
     localStorage.removeItem('nome');
-    window.location.href = '/login';
+    window.location.href = '/';
   }
 
   return (
@@ -35,10 +35,23 @@ const Header = () => {
         )}
         {localStorage.getItem('token') && (
           <>
-            <span style={{marginLeft: '10px', marginRight: '10px'}}>
+            <Link
+              to="/Usuario"
+              style={{
+                marginLeft: '10px',
+                marginRight: '10px',
+                color: '#4F6B46',
+                fontWeight: 'bold',
+                textDecoration: 'underline',
+                background: 'none',
+                border: 'none',
+                boxShadow: 'none',
+                padding: 0
+              }}
+            >
               Olá, <strong>{nomeUsuario}</strong>
-            </span>
-            <button onClick={handleLogout} style={{marginLeft: '10px'}}>Sair</button>
+            </Link>
+            <button onClick={handleLogout} style={{marginLeft: '20px', background:'#4F6B46', color:'#fff', border:'none', borderRadius:'20px', padding:'10px 10px', fontWeight:'bold'}}>Sair</button>
           </>
         )}
       </nav>
