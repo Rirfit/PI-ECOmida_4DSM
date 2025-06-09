@@ -22,6 +22,8 @@ import TortaLimao from './pages/sobremesas/TortaLimao'
 import PicanhaManteiga from './pages/Carnes/PicanhaManteiga'
 import LegumesCarne from './pages/carnes/LegumesCarne'
 import Lagarto from './pages/carnes/Lagarto'
+import CriarReceita from './pages/sobremesas/criar-receita';
+
 
 
 function App() {
@@ -39,6 +41,7 @@ function App() {
           <Route path='Sobremesas' element={<Sobremesas />} />
           <Route path='Peixes' element={<Peixes />} />
           <Route path='MudarSenha' element={<MudarSenha />} />
+          <Route path="/criar-receita" element={<CriarReceita />} />
           {/* Rotas protegidas */}
           <Route path='Doacao' element={
             <PrivateRoute>

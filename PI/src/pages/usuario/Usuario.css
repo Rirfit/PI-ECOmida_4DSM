@@ -32,11 +32,88 @@
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
+/* Alinhamento dos campos de edição */
 .user-info p {
+  display: grid;
+  grid-template-columns: 90px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
   font-size: 16px;
   color: #555;
+  margin: 8px 0;
+  padding: 0;
+}
+
+.user-info strong {
+  justify-self: end;
+  min-width: 80px;
+}
+
+/* Ícone de lápis e botões de edição */
+.user-info span[title^="Editar"] {
+  font-size: 18px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+  align-self: center;
+}
+
+.user-info span[title^="Editar"]:hover {
+  color: #1976d2;
+}
+
+.user-info input[type="text"],
+.user-info input[type="email"] {
+  margin-left: 0;
+  padding: 6px 10px;
+  border: 1px solid #bdbdbd;
+  border-radius: 5px;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.2s;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.user-info input[type="text"]:focus,
+.user-info input[type="email"]:focus {
+  border: 1.5px solid #1976d2;
+}
+
+.user-info button {
+  margin-left: 0;
+  padding: 7px 16px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.user-info button:first-of-type {
+  background: #1976d2;
+  color: #fff;
+}
+
+.user-info button:first-of-type:hover {
+  background: #125a9c;
+}
+
+.user-info button:last-of-type {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.user-info button:last-of-type:hover {
+  background: #bdbdbd;
 }
 
 /* Botão de alterar senha */
@@ -47,7 +124,7 @@
 
 .alterar-senha-botao {
   padding: 14px 20px;
-  background-color: #4F6B46;
+  background-color: #1976d2;
   color: white;
   font-size: 16px;
   font-weight: bold;
@@ -58,7 +135,7 @@
 }
 
 .alterar-senha-botao:hover {
-  background-color: #3f5738;
+  background-color: #125a9c;
   transform: translateY(-2px);
 }
 
@@ -66,7 +143,7 @@
   transform: translateY(1px);
 }
 
-/* Animação de entrada */
+/* Animação */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -74,6 +151,19 @@
   to {
     opacity: 1;
   }
+}
+
+/* Mensagens de carregamento e erro */
+.estado-feedback {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 60px;
+  color: #555;
+}
+
+.estado-feedback.erro {
+  color: #d32f2f;
+  font-weight: bold;
 }
 
 /* Responsividade */
@@ -97,6 +187,19 @@
   }
 }
 
+@media (max-width: 600px) {
+  .user-info p {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    font-size: 14px;
+  }
+  .user-info input,
+  .user-info button {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
 @media (max-width: 480px) {
   .user-container {
     padding: 15px;
@@ -115,4 +218,44 @@
     font-size: 14px;
     padding: 10px 14px;
   }
+}
+
+/* Avatar circular */
+.avatar {
+  width: 80px;
+  height: 80px;
+  background-color: #1976d2;
+  color: white;
+  border-radius: 50%;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px auto;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Botão de sair */
+.sair-botao {
+  margin-top: 10px;
+  padding: 12px 20px;
+  background-color: #e53935;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+}
+
+.sair-botao:hover {
+  background-color: #c62828;
+  transform: translateY(-2px);
+}
+
+.sair-botao:active {
+  transform: translateY(1px);
 }

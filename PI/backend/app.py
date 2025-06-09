@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask import send_from_directory
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import jwt
 import datetime
@@ -12,6 +14,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import secrets
 import re
+
+
+
 
 load_dotenv()
 
@@ -431,30 +436,36 @@ def obter_receita(receita_id):
 @verificar_token
 def criar_receita():
     try:
-        dados = request.get_json()
-        
-        campos_obrigatorios = ['titulo', 'ingredientes', 'modo_preparo', 'categoria']
-        for campo in campos_obrigatorios:
-            if not dados.get(campo):
-                return jsonify({'erro': f'Campo {campo} é obrigatório'}), 400
+        dados = request.form
+        imagem = request.files.get('imagem')
+        caminho_imagem = None
 
+        if imagem:
+            nome_arquivo = secure_filename(imagem.filename)
+            pasta = os.path.join('static', 'imagens')
+            os.makedirs(pasta, exist_ok=True)
+            caminho = os.path.join(pasta, nome_arquivo)
+            imagem.save(caminho)
+            caminho_imagem = f'imagens/{nome_arquivo}'
+
+        # Pegue os campos normalmente de dados['campo']
         receita = {
-            'titulo': dados['titulo'].strip(),
+            'titulo': dados.get('titulo', '').strip(),
             'descricao': dados.get('descricao', '').strip(),
-            'ingredientes': dados['ingredientes'],
-            'modo_preparo': dados['modo_preparo'],
-            'categoria': dados['categoria'],
+            'ingredientes': dados.getlist('ingredientes'),
+            'modo_preparo': dados.getlist('modo_preparo'),
+            'categoria': dados.get('categoria'),
             'tempo_preparo': dados.get('tempo_preparo'),
             'porcoes': dados.get('porcoes'),
             'dificuldade': dados.get('dificuldade', 'média'),
             'autor_id': str(request.usuario_atual['_id']),
             'autor_nome': request.usuario_atual['nome'],
             'data_criacao': datetime.datetime.now(datetime.UTC),
-            'ativa': True
+            'ativa': True,
+            'imagem': caminho_imagem
         }
 
         resultado = receitas_collection.insert_one(receita)
-        
         return jsonify({
             'mensagem': 'Receita criada com sucesso!',
             'receita_id': str(resultado.inserted_id)
@@ -534,6 +545,10 @@ def listar_pontos_entrega():
         {"nome": "Centro Solidário", "endereco": "Av. B, 456"}
     ]
     return jsonify({'pontos_entrega': pontos}), 200
+
+@app.route('/imagens/<path:filename>')
+def imagens(filename):
+    return send_from_directory('static/imagens', filename)
 
 
 # =================== INICIALIZAÇÃO ===================

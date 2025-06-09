@@ -6,71 +6,137 @@ import { useNavigate } from 'react-router-dom';
 
 function Usuario() {
   const navigate = useNavigate();
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [mensagem, setMensagem] = useState('');
+  const [usuario, setUsuario] = useState({ nome: '', email: '' });
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState(null);
 
-  // Buscar dados do usuário ao carregar a página
+  // Novos estados para edição
+  const [editando, setEditando] = useState({ nome: false, email: false });
+  const [novoUsuario, setNovoUsuario] = useState({ nome: '', email: '' });
+
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:5000/usuario', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setNome(data.nome);
-        setEmail(data.email);
-      });
-  }, []);
+    if (!token) {
+      navigate('/login');
+      return;
+    }
 
-  // Função para atualizar dados
-  const handleSalvar = async (e) => {
-    e.preventDefault();
-    
-    const token = localStorage.getItem('token');
-    const response = await fetch('http://localhost:5000/usuario', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ nome, email })
-    });
-    const data = await response.json();
-    if (response.ok) {
-      setMensagem('Dados atualizados com sucesso!');
-      localStorage.setItem('nome', nome); // Atualiza nome no header
-    } else {
-      setMensagem(data.erro || 'Erro ao atualizar dados');
+    fetch('http://localhost:5000/perfil', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Falha ao obter perfil');
+        return res.json();
+      })
+      .then(data => {
+        setUsuario({
+          nome: data.usuario.nome,
+          email: data.usuario.email
+        });
+        setNovoUsuario({
+          nome: data.usuario.nome,
+          email: data.usuario.email
+        });
+      })
+      .catch(err => setErro(err.message))
+      .finally(() => setLoading(false));
+  }, [navigate]);
+
+  // Função para atualizar o usuário
+  const handleSalvar = async (campo) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/perfil', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ [campo]: novoUsuario[campo] })
+      });
+      if (!res.ok) throw new Error('Erro ao atualizar');
+      setUsuario(prev => ({ ...prev, [campo]: novoUsuario[campo] }));
+      setEditando(prev => ({ ...prev, [campo]: false }));
+    } catch (err) {
+      setErro(err.message);
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
+  if (loading) return <p className="estado-feedback">Carregando...</p>;
+  if (erro) return <p className="estado-feedback erro">Erro: {erro}</p>;
 
   return (
     <>
       <Header />
       <div className="user-container">
+        <div className="avatar">
+          <span>{usuario.nome.charAt(0).toUpperCase()}</span>
+        </div>
         <h2>Minha Conta</h2>
-        <form onSubmit={handleSalvar} className="user-info">
-          <label>
+        <div className="user-info">
+          <p>
             <strong>Nome:</strong>
-            <input type="text" value={nome} onChange={e => setNome(e.target.value)} />
-          </label>
-          <label>
+            {editando.nome ? (
+              <>
+                <input
+                  type="text"
+                  value={novoUsuario.nome}
+                  onChange={e => setNovoUsuario({ ...novoUsuario, nome: e.target.value })}
+                />
+                <button onClick={() => handleSalvar('nome')} disabled={loading}>Salvar</button>
+                <button onClick={() => setEditando(prev => ({ ...prev, nome: false }))} disabled={loading}>Cancelar</button>
+              </>
+            ) : (
+              <>
+                {' '}{usuario.nome}
+                <span
+                  style={{ cursor: 'pointer', marginLeft: '8px' }}
+                  title="Editar nome"
+                  aria-label="Editar nome"
+                  onClick={() => setEditando(prev => ({ ...prev, nome: true }))}
+                >✏️</span>
+              </>
+            )}
+          </p>
+          <p>
             <strong>Email:</strong>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
-          </label>
-          <button type="submit">Salvar Alterações</button>
-        </form>
-        {mensagem && <p style={{color: 'green'}}>{mensagem}</p>}
-
+            {editando.email ? (
+              <>
+                <input
+                  type="email"
+                  value={novoUsuario.email}
+                  onChange={e => setNovoUsuario({ ...novoUsuario, email: e.target.value })}
+                />
+                <button onClick={() => handleSalvar('email')} disabled={loading}>Salvar</button>
+                <button onClick={() => setEditando(prev => ({ ...prev, email: false }))} disabled={loading}>Cancelar</button>
+              </>
+            ) : (
+              <>
+                {' '}{usuario.email}
+                <span
+                  style={{ cursor: 'pointer', marginLeft: '8px' }}
+                  title="Editar email"
+                  aria-label="Editar email"
+                  onClick={() => setEditando(prev => ({ ...prev, email: true }))}
+                >✏️</span>
+              </>
+            )}
+          </p>
+        </div>
         <div className="alterar-senha-container">
-          <button
-            className="alterar-senha-botao"
-            onClick={() => navigate('/MudarSenha')}
-          >
+          <button className="alterar-senha-botao" onClick={() => navigate('/MudarSenha')}>
             Alterar Senha
+          </button>
+          <button className="enviar-receita-botao" onClick={() => navigate('/criar-receita')}>
+            Enviar uma Receita
+          </button>
+          <button className="sair-botao" onClick={handleLogout}>
+            Sair
           </button>
         </div>
       </div>
