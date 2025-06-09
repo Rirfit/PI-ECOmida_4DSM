@@ -19,6 +19,10 @@ import Panqueca from './pages/carnes/Panqueca'
 import Pave from './pages/sobremesas/Pave'
 import SorveteMorango from './pages/sobremesas/SorveteMorango'
 import TortaLimao from './pages/sobremesas/TortaLimao'
+import PicanhaManteiga from './pages/Carnes/PicanhaManteiga'
+import LegumesCarne from './pages/carnes/LegumesCarne'
+import Lagarto from './pages/carnes/Lagarto'
+
 
 function App() {
   return (
@@ -52,6 +56,10 @@ function App() {
           <Route path='Pave'element={<Pave/>} />
           <Route path='SorveteMorango'element={<SorveteMorango/>} />
           <Route path='TortaLimao'element={<TortaLimao/>} />
+          <Route path='PicanhaManteiga'element={<PicanhaManteiga/>} />
+          <Route path='LegumesCarne'element={<LegumesCarne/>} />
+          <Route path='Lagarto'element={<Lagarto/>} />
+         
         </Routes>
       </BrowserRouter>
     </>

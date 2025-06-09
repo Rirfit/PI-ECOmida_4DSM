@@ -21,17 +21,17 @@ function Carnes() {
                         <h4>Panqueca de carne</h4>
                     </Link>
 
-                    <Link to="/Carnes" className="categoria">
+                    <Link to="/Lagarto" className="categoria">
                         <img src={lagarto} alt="lagarto" />
                         <h4>Lagarto ao molho madeira</h4>
                     </Link>
 
-                    <Link to="/Peixes" className="categoria">
+                    <Link to="/LegumesCarne" className="categoria">
                         <img src={legumes} alt="legumes" />
                         <h4>Legumes com carne</h4>
                     </Link>
 
-                    <Link to="/Aves" className="categoria">
+                    <Link to="/PicanhaManteiga" className="categoria">
                         <img src={picanha} alt="picanha" />
                         <h4>Picanha na manteiga</h4>
                     </Link>
