@@ -1,5 +1,6 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import PrivateRoute from './components/auth/PrivateRoute';
 import Cadastro from './pages/cadastro/Cadastro'
 import Home from './pages/home/Home'
 import Sobre from './pages/sobre/Sobre'
@@ -21,6 +22,8 @@ import TortaLimao from './pages/sobremesas/TortaLimao'
 import PicanhaManteiga from './pages/Carnes/PicanhaManteiga'
 import LegumesCarne from './pages/carnes/LegumesCarne'
 import Lagarto from './pages/carnes/Lagarto'
+import CriarReceita from './pages/sobremesas/criar-receita';
+
 
 
 function App() {
@@ -38,8 +41,18 @@ function App() {
           <Route path='Sobremesas' element={<Sobremesas />} />
           <Route path='Peixes' element={<Peixes />} />
           <Route path='MudarSenha' element={<MudarSenha />} />
-          <Route path='Doacao'element={<Doacao/>} />
-          <Route path='Usuario'element={<Usuario/>} />
+          <Route path="/criar-receita" element={<CriarReceita />} />
+          {/* Rotas protegidas */}
+          <Route path='Doacao' element={
+            <PrivateRoute>
+              <Doacao />
+            </PrivateRoute>
+          } />
+          <Route path='Usuario' element={
+            <PrivateRoute>
+              <Usuario />
+            </PrivateRoute>
+          } />
           <Route path='Bolo'element={<Bolo/>} />
           <Route path='EmailSenha'element={<EmailSenha/>} />
           <Route path='Panqueca'element={<Panqueca/>} />

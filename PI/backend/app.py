@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask import send_from_directory
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import jwt
 import datetime
@@ -12,6 +14,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import secrets
 import re
+
+
+
 
 load_dotenv()
 
@@ -28,6 +33,8 @@ db = client[os.getenv("DB_NAME")]
 usuarios_collection = db['usuarios']
 receitas_collection = db['receitas']
 tokens_reset_collection = db['tokens_reset']
+doacoes_collection = db['doacoes']
+
 
 # Middleware para verificar token JWT
 def verificar_token(f):
@@ -81,7 +88,7 @@ def enviar_email_reset(email, token):
         remetente_email = "seu_email@gmail.com"  # Configure aqui
         remetente_senha = "sua_senha_app"  # Configure aqui
         
-        mensagem = MimeMultipart()
+        mensagem = MIMEMultipart()
         mensagem['From'] = remetente_email
         mensagem['To'] = email
         mensagem['Subject'] = "Redefinição de Senha - ECOmida"
@@ -102,7 +109,7 @@ def enviar_email_reset(email, token):
         Equipe ECOmida
         """
         
-        mensagem.attach(MimeText(corpo, 'plain'))
+        mensagem.attach(MIMEText(corpo, 'plain'))
         
         servidor = smtplib.SMTP(smtp_server, smtp_port)
         servidor.starttls()
@@ -152,7 +159,7 @@ def cadastrar():
             'nome': nome,
             'email': email,
             'senha': hash_senha,
-            'data_cadastro': datetime.datetime.utcnow(),
+            'data_cadastro': datetime.datetime.now(datetime.UTC),
             'ativo': True
         }
         
@@ -187,7 +194,7 @@ def login():
         token = jwt.encode({
             'id': str(usuario['_id']),
             'email': usuario['email'],
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=24)
         }, app.config['SECRET_KEY'], algorithm='HS256')
 
         return jsonify({
@@ -228,7 +235,7 @@ def esqueci_senha():
         tokens_reset_collection.insert_one({
             'email': email,
             'token': token_reset,
-            'criado_em': datetime.datetime.utcnow(),
+            'criado_em': datetime.datetime.now(datetime.UTC),
             'expirado': False
         })
 
@@ -274,7 +281,7 @@ def redefinir_senha():
             return jsonify({'erro': 'Token inválido ou expirado'}), 400
 
         # Verificar se token não expirou (1 hora)
-        if datetime.datetime.utcnow() - token_doc['criado_em'] > datetime.timedelta(hours=1):
+        if datetime.datetime.now(datetime.UTC) - token_doc['criado_em'] > datetime.timedelta(hours=1):
             tokens_reset_collection.update_one(
                 {'_id': token_doc['_id']},
                 {'$set': {'expirado': True}}
@@ -301,9 +308,9 @@ def redefinir_senha():
 
 # =================== ROTAS DE USUÁRIO ===================
 
-@app.route('/perfil', methods=['GET'])
+@app.route('/usuario', methods=['GET'])
 @verificar_token
-def obter_perfil():
+def obter_usuario():
     try:
         usuario = request.usuario_atual
         return jsonify({
@@ -317,25 +324,30 @@ def obter_perfil():
     except Exception as e:
         return jsonify({'erro': 'Erro interno do servidor'}), 500
 
-@app.route('/perfil', methods=['PUT'])
+@app.route('/usuario', methods=['PUT'])
 @verificar_token
-def atualizar_perfil():
+def atualizar_usuario():
     try:
         dados = request.get_json()
         nome = dados.get('nome', '').strip()
-        
-        if not nome:
-            return jsonify({'erro': 'Nome é obrigatório'}), 400
-            
+        email = dados.get('email', '').strip().lower()
+
+        if not nome or not email:
+            return jsonify({'erro': 'Nome e email são obrigatórios'}), 400
+
         if len(nome) < 2:
             return jsonify({'erro': 'Nome deve ter pelo menos 2 caracteres'}), 400
 
+        # (Opcional) Validação de email
+        if not validar_email(email):
+            return jsonify({'erro': 'Email inválido'}), 400
+
         usuarios_collection.update_one(
             {'_id': request.usuario_atual['_id']},
-            {'$set': {'nome': nome}}
+            {'$set': {'nome': nome, 'email': email}}
         )
 
-        return jsonify({'mensagem': 'Perfil atualizado com sucesso!'}), 200
+        return jsonify({'mensagem': 'Usuário atualizado com sucesso!'}), 200
 
     except Exception as e:
         return jsonify({'erro': 'Erro interno do servidor'}), 500
@@ -424,30 +436,36 @@ def obter_receita(receita_id):
 @verificar_token
 def criar_receita():
     try:
-        dados = request.get_json()
-        
-        campos_obrigatorios = ['titulo', 'ingredientes', 'modo_preparo', 'categoria']
-        for campo in campos_obrigatorios:
-            if not dados.get(campo):
-                return jsonify({'erro': f'Campo {campo} é obrigatório'}), 400
+        dados = request.form
+        imagem = request.files.get('imagem')
+        caminho_imagem = None
 
+        if imagem:
+            nome_arquivo = secure_filename(imagem.filename)
+            pasta = os.path.join('static', 'imagens')
+            os.makedirs(pasta, exist_ok=True)
+            caminho = os.path.join(pasta, nome_arquivo)
+            imagem.save(caminho)
+            caminho_imagem = f'imagens/{nome_arquivo}'
+
+        # Pegue os campos normalmente de dados['campo']
         receita = {
-            'titulo': dados['titulo'].strip(),
+            'titulo': dados.get('titulo', '').strip(),
             'descricao': dados.get('descricao', '').strip(),
-            'ingredientes': dados['ingredientes'],
-            'modo_preparo': dados['modo_preparo'],
-            'categoria': dados['categoria'],
+            'ingredientes': dados.getlist('ingredientes'),
+            'modo_preparo': dados.getlist('modo_preparo'),
+            'categoria': dados.get('categoria'),
             'tempo_preparo': dados.get('tempo_preparo'),
             'porcoes': dados.get('porcoes'),
             'dificuldade': dados.get('dificuldade', 'média'),
             'autor_id': str(request.usuario_atual['_id']),
             'autor_nome': request.usuario_atual['nome'],
-            'data_criacao': datetime.datetime.utcnow(),
-            'ativa': True
+            'data_criacao': datetime.datetime.now(datetime.UTC),
+            'ativa': True,
+            'imagem': caminho_imagem
         }
 
         resultado = receitas_collection.insert_one(receita)
-        
         return jsonify({
             'mensagem': 'Receita criada com sucesso!',
             'receita_id': str(resultado.inserted_id)
@@ -462,7 +480,7 @@ def criar_receita():
 def health_check():
     return jsonify({
         'status': 'ok',
-        'timestamp': datetime.datetime.utcnow().isoformat(),
+        'timestamp': datetime.datetime.now(datetime.UTC).isoformat(),
         'version': '1.0.0'
     }), 200
 
@@ -480,6 +498,59 @@ def metodo_nao_permitido(error):
 def erro_interno(error):
     return jsonify({'erro': 'Erro interno do servidor'}), 500
 
+# =================== ROTAS DE DOAÇÕES ===================
+
+@app.route('/doacoes', methods=['POST'])
+@verificar_token
+def registrar_doacao():
+    try:
+        dados = request.get_json()
+        tipo = dados.get('tipo')
+        valor = dados.get('valor')
+        descricao = dados.get('descricao', '').strip()
+
+        if tipo not in ['comida', 'dinheiro']:
+            return jsonify({'erro': 'Tipo de doação deve ser "comida" ou "dinheiro"'}), 400
+        if not valor:
+            return jsonify({'erro': 'Valor é obrigatório'}), 400
+
+        doacao = {
+            'usuario_id': str(request.usuario_atual['_id']),
+            'tipo': tipo,
+            'valor': valor,
+            'descricao': descricao,
+            'data': datetime.datetime.now(datetime.UTC)
+        }
+        resultado = doacoes_collection.insert_one(doacao)
+        return jsonify({'mensagem': 'Doação registrada com sucesso!', 'doacao_id': str(resultado.inserted_id)}), 201
+    except Exception as e:
+        return jsonify({'erro': 'Erro ao registrar doação'}), 500
+
+@app.route('/doacoes', methods=['GET'])
+@verificar_token
+def listar_doacoes():
+    try:
+        doacoes = list(doacoes_collection.find())
+        for d in doacoes:
+            d['_id'] = str(d['_id'])
+        return jsonify({'doacoes': doacoes}), 200
+    except Exception as e:
+        return jsonify({'erro': 'Erro ao listar doações'}), 500
+
+@app.route('/pontos-entrega', methods=['GET'])
+def listar_pontos_entrega():
+    # Exemplo estático, substitua por busca no banco se desejar
+    pontos = [
+        {"nome": "ONG Esperança", "endereco": "Rua A, 123"},
+        {"nome": "Centro Solidário", "endereco": "Av. B, 456"}
+    ]
+    return jsonify({'pontos_entrega': pontos}), 200
+
+@app.route('/imagens/<path:filename>')
+def imagens(filename):
+    return send_from_directory('static/imagens', filename)
+
+
 # =================== INICIALIZAÇÃO ===================
 
 def inicializar_dados():
@@ -490,6 +561,9 @@ def inicializar_dados():
         receitas_collection.create_index("categoria")
         receitas_collection.create_index("titulo")
         tokens_reset_collection.create_index("token")
+        doacoes_collection.create_index("usuario_id")
+        
+    
         
         print("✅ Índices do banco de dados criados/verificados")
         
@@ -506,7 +580,7 @@ def inicializar_dados():
                     'porcoes': 4,
                     'dificuldade': 'fácil',
                     'autor_nome': 'Sistema',
-                    'data_criacao': datetime.datetime.utcnow(),
+                    'data_criacao': datetime.datetime.now(datetime.UTC),
                     'ativa': True
                 },
                 {
@@ -519,7 +593,7 @@ def inicializar_dados():
                     'porcoes': 6,
                     'dificuldade': 'fácil',
                     'autor_nome': 'Sistema',
-                    'data_criacao': datetime.datetime.utcnow(),
+                    'data_criacao': datetime.datetime.now(datetime.UTC),
                     'ativa': True
                 }
             ]
@@ -532,17 +606,17 @@ def inicializar_dados():
 if __name__ == '__main__':
     print("🚀 Iniciando servidor ECOmida...")
     inicializar_dados()
-    print("✅ Servidor rodando em http://localhost:5000")
     print("📝 Rotas disponíveis:")
     print("   POST /cadastro - Cadastrar usuário")
     print("   POST /login - Fazer login")
     print("   POST /esqueci-senha - Solicitar reset de senha")
     print("   POST /redefinir-senha - Redefinir senha")
-    print("   GET /perfil - Obter perfil (auth)")
-    print("   PUT /perfil - Atualizar perfil (auth)")
+    print("   GET /usuario - Obter usuario (auth)")
+    print("   PUT /usuario - Atualizar usuario (auth)")
     print("   POST /alterar-senha - Alterar senha (auth)")
     print("   GET /receitas - Listar receitas")
     print("   GET /receitas/<id> - Obter receita específica")
     print("   POST /receitas - Criar receita (auth)")
     print("   GET /health - Health check")
+    print("✅ Servidor rodando em http://localhost:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)

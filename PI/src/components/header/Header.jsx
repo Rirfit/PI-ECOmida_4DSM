@@ -7,6 +7,13 @@ import logoPreta from '../../assets/Logo-preta.png';
 const Header = () => {
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const nomeUsuario = localStorage.getItem('nome');
+
+  function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('nome');
+    window.location.href = '/';
+  }
 
   return (
     <header className={`header ${isHome ? 'dark' : 'light'}`}>
@@ -20,9 +27,33 @@ const Header = () => {
         <Link to="/sobre">Sobre Nós</Link>
         <Link to="/receitas">Receitas</Link>
         <Link to="/Doacao">Doe</Link>
-        <Link to="/cadastro">Cadastrar</Link>
-        <Link to="/login">Entrar</Link>
-        
+        {!localStorage.getItem('token') && (
+          <>
+            <Link to="/cadastro">Cadastrar</Link>
+            <Link to="/login">Entrar</Link>
+          </>
+        )}
+        {localStorage.getItem('token') && (
+          <>
+            <Link
+              to="/Usuario"
+              style={{
+                marginLeft: '10px',
+                marginRight: '10px',
+                color: '#4F6B46',
+                fontWeight: 'bold',
+                textDecoration: 'underline',
+                background: 'none',
+                border: 'none',
+                boxShadow: 'none',
+                padding: 0
+              }}
+            >
+              Olá, <strong>{nomeUsuario}</strong>
+            </Link>
+            <button onClick={handleLogout} style={{marginLeft: '20px', background:'#4F6B46', color:'#fff', border:'none', borderRadius:'20px', padding:'10px 10px', fontWeight:'bold'}}>Sair</button>
+          </>
+        )}
       </nav>
     </header>
   );

@@ -23,12 +23,13 @@ const Login = () => {
 
       if (resposta.ok) {
         localStorage.setItem('token', dados.token);
+        localStorage.setItem('nome', dados.usuario.nome);
         setMensagem('Login realizado com sucesso!');
         navigate('/Usuario');
       } else {
         setMensagem(dados.erro || 'Erro no login');
       }
-    } catch (erro) {
+    } catch {
       setMensagem('Erro de conexão com o servidor.');
     }
   };
