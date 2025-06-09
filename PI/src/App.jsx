@@ -23,6 +23,19 @@ import PicanhaManteiga from './pages/Carnes/PicanhaManteiga'
 import LegumesCarne from './pages/carnes/LegumesCarne'
 import Lagarto from './pages/carnes/Lagarto'
 import CriarReceita from './pages/sobremesas/criar-receita';
+import BolinhoPeixe from './pages/peixes/BolinhoPeixe'
+import BolinhoBacalhau from './pages/peixes/BolinhoBacalhau'
+import ArrozPeixe from './pages/peixes/ArrozPeixe'
+import GratinadoPeixe from './pages/peixes/GratinadoPeixe'
+import FrangoMazu from './pages/aves/FrangoMazu'
+import GratinadoFrango from './pages/aves/GratinadoFrango'
+import Macarronese from './pages/aves/Macarronese'
+import TortaDeFrango from './pages/aves/TortaDeFrango'
+import Saladas from './pages/saladas/Saladas'
+import SaladaAbacate from './pages/saladas/SaladaAbacate'
+import SaladaBeterraba from './pages/saladas/SaladaBeterraba'
+import SaladaGrao from './pages/saladas/SaladaGrao'
+import SaladaManga from './pages/saladas/SaladaManga'
 
 
 
@@ -62,6 +75,20 @@ function App() {
           <Route path='PicanhaManteiga'element={<PicanhaManteiga/>} />
           <Route path='LegumesCarne'element={<LegumesCarne/>} />
           <Route path='Lagarto'element={<Lagarto/>} />
+          <Route path='BolinhoPeixe'element={<BolinhoPeixe/>} />
+          <Route path='BolinhoBacalhau'element={<BolinhoBacalhau/>} />
+          <Route path='ArrozPeixe'element={<ArrozPeixe/>} />
+          <Route path='GratinadoPeixe'element={<GratinadoPeixe/>} />
+          <Route path='FrangoMazu'element={<FrangoMazu/>} />
+          <Route path='GratinadoFrango'element={<GratinadoFrango/>} />
+          <Route path='Macarronese'element={<Macarronese/>} />
+          <Route path='TortaDeFrango'element={<TortaDeFrango/>} />
+          <Route path='Saladas'element={<Saladas/>} />
+          <Route path='SaladaGrao'element={<SaladaGrao/>} />
+          <Route path='SaladaManga'element={<SaladaManga/>} />
+          <Route path='SaladaAbacate'element={<SaladaAbacate/>} />
+          <Route path='SaladaBeterraba'element={<SaladaBeterraba/>} />
+         
          
         </Routes>
       </BrowserRouter>

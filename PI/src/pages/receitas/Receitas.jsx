@@ -37,7 +37,7 @@ function Receitas() {
             <h4>Aves</h4>
           </Link>
 
-          <Link to="/Sobremesas" className="categoria">
+          <Link to="/Saladas" className="categoria">
             <img src={saladas} alt="saladas" />
             <h4>Saladas</h4>
           </Link>

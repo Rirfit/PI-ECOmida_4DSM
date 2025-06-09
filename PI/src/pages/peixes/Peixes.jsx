@@ -3,10 +3,10 @@ import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import "../receitas/Receitas.css"
 import { Link } from 'react-router-dom';
-import legumes from '../../assets/legumes-carne.jpg'
-import lagarto from '../../assets/lagarto-molho-madeira.jpg'
-import panqueca from '../../assets/panqueca-de-carne.jpg'
-import picanha from '../../assets/picanha-na-manteiga.jpeg'
+import bolinhoPeixe from '../../assets/bolinhoPeixe.jpg'
+import bolinhoBacalhau from '../../assets/bolinhoBacalhau.jpg'
+import arrozPeixe from '../../assets/arrozPeixe.jpg'
+import gratinadoPeixe from '../../assets/gratinadoPeixe.jpg'
 
 function Peixes() {
     return (
@@ -16,24 +16,24 @@ function Peixes() {
 
                 <div className="receitas-container">
 
-                    <Link to="/Panqueca" className="categoria">
-                        <img src={panqueca} alt="panqueca" />
-                        <h4>Panqueca de carne</h4>
+                    <Link to="/BolinhoPeixe" className="categoria">
+                        <img src={bolinhoPeixe} alt="Bolinho de peixe com batata" />
+                        <h4>Bolinho de peixe com batata</h4>
                     </Link>
 
-                    <Link to="/Carnes" className="categoria">
-                        <img src={lagarto} alt="lagarto" />
-                        <h4>Lagarto ao molho madeira</h4>
+                    <Link to="/BolinhoBacalhau" className="categoria">
+                        <img src={bolinhoBacalhau} alt="Bolinho de Bacalhau" />
+                        <h4>Bolinho de bacalhau</h4>
                     </Link>
 
-                    <Link to="/Peixes" className="categoria">
-                        <img src={legumes} alt="legumes" />
-                        <h4>Legumes com carne</h4>
+                    <Link to="/ArrozPeixe" className="categoria">
+                        <img src={arrozPeixe} alt="Arroz cremoso de peixe" />
+                        <h4>Arroz cremoso de peixe</h4>
                     </Link>
 
-                    <Link to="/Aves" className="categoria">
-                        <img src={picanha} alt="picanha" />
-                        <h4>Picanha na manteiga</h4>
+                    <Link to="/GratinadoPeixe" className="categoria">
+                        <img src={gratinadoPeixe} alt="gratinado de peixe" />
+                        <h4>Gratinado de peixe</h4>
                     </Link>
                 </div>
             </div>
