@@ -84,11 +84,10 @@ def validar_senha(senha):
 # Função para enviar email (configurar com suas credenciais)
 def enviar_email_reset(email, token):
     try:
-        # Configurar com suas credenciais de email
-        smtp_server = "smtp.gmail.com"  # ou seu servidor SMTP
-        smtp_port = 587
-        remetente_email = "seu_email@gmail.com"  # Configure aqui
-        remetente_senha = "sua_senha_app"  # Configure aqui
+        smtp_server = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+        smtp_port = int(os.getenv("MAIL_PORT", 587))
+        remetente_email = os.getenv("MAIL_USERNAME")
+        remetente_senha = os.getenv("MAIL_PASSWORD")
         
         mensagem = MIMEMultipart()
         mensagem['From'] = remetente_email
@@ -242,10 +241,10 @@ def esqueci_senha():
         })
 
         # Enviar email (descomente e configure para usar)
-        # if enviar_email_reset(email, token_reset):
-        #     return jsonify({'mensagem': 'Email de redefinição enviado'}), 200
-        # else:
-        #     return jsonify({'erro': 'Erro ao enviar email'}), 500
+        if enviar_email_reset(email, token_reset):
+            return jsonify({'mensagem': 'Email de redefinição enviado'}), 200
+        else:
+            return jsonify({'erro': 'Erro ao enviar email'}), 500
 
         return jsonify({
             'mensagem': 'Se o email existir, um link será enviado',
