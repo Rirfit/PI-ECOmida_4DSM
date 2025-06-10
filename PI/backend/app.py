@@ -68,6 +68,8 @@ def verificar_token(f):
     decorator.__name__ = f.__name__
     return decorator
 
+
+
 # Função para validar email
 def validar_email(email):
     padrao = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -470,6 +472,24 @@ def criar_receita():
             'mensagem': 'Receita criada com sucesso!',
             'receita_id': str(resultado.inserted_id)
         }), 201
+
+    except Exception as e:
+        return jsonify({'erro': 'Erro interno do servidor'}), 500
+    
+    # Receitas com ID
+
+@app.route('/receitas/minhas', methods=['GET'])
+@verificar_token
+def listar_minhas_receitas():
+    try:
+        autor_id = str(request.usuario_atual['_id'])
+
+        receitas = list(receitas_collection.find({'autor_id': autor_id}).sort('titulo', 1))
+
+        for receita in receitas:
+            receita['_id'] = str(receita['_id'])
+
+        return jsonify({'receitas': receitas}), 200
 
     except Exception as e:
         return jsonify({'erro': 'Erro interno do servidor'}), 500

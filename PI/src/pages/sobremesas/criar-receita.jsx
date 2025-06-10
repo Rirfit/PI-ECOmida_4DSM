@@ -13,7 +13,6 @@ function CriarReceita() {
   const [dificuldade, setDificuldade] = useState('média');
   const [mensagem, setMensagem] = useState('');
   const [erro, setErro] = useState('');
-
   const [imagem, setImagem] = useState(null);
 
   const handleIngredienteChange = (i, value) => {
@@ -35,50 +34,50 @@ function CriarReceita() {
   const removerPasso = (i) => setModoPreparo(modoPreparo.filter((_, idx) => idx !== i));
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setMensagem('');
-  setErro('');
-  try {
-    const token = localStorage.getItem('token');
-    const formData = new FormData();
-    formData.append('titulo', titulo);
-    formData.append('descricao', descricao);
-    ingredientes.filter(i => i.trim() !== '').forEach(i => formData.append('ingredientes', i));
-    modoPreparo.filter(p => p.trim() !== '').forEach(p => formData.append('modo_preparo', p));
-    formData.append('categoria', categoria);
-    formData.append('tempo_preparo', tempoPreparo);
-    formData.append('porcoes', porcoes);
-    formData.append('dificuldade', dificuldade);
-    if (imagem) formData.append('imagem', imagem);
+    e.preventDefault();
+    setMensagem('');
+    setErro('');
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('titulo', titulo);
+      formData.append('descricao', descricao);
+      ingredientes.filter(i => i.trim() !== '').forEach(i => formData.append('ingredientes', i));
+      modoPreparo.filter(p => p.trim() !== '').forEach(p => formData.append('modo_preparo', p));
+      formData.append('categoria', categoria);
+      formData.append('tempo_preparo', tempoPreparo);
+      formData.append('porcoes', porcoes);
+      formData.append('dificuldade', dificuldade);
+      if (imagem) formData.append('imagem', imagem);
 
-    const resposta = await fetch('http://localhost:5000/receitas', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-        // NÃO coloque 'Content-Type', o browser define automaticamente para FormData!
-      },
-      body: formData
-    });
-    const dados = await resposta.json();
-    if (resposta.ok) {
-      setMensagem('Receita enviada com sucesso!');
-      // Limpa o formulário
-      setTitulo('');
-      setDescricao('');
-      setIngredientes(['']);
-      setModoPreparo(['']);
-      setCategoria('');
-      setTempoPreparo('');
-      setPorcoes('');
-      setDificuldade('média');
-      setImagem(null);
-    } else {
-      setErro(dados.erro || 'Erro ao enviar receita');
+      const resposta = await fetch('http://localhost:5000/receitas', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+          // NÃO coloque 'Content-Type', o browser define automaticamente para FormData!
+        },
+        body: formData
+      });
+      const dados = await resposta.json();
+      if (resposta.ok) {
+        setMensagem('Receita enviada com sucesso!');
+        // Limpa o formulário
+        setTitulo('');
+        setDescricao('');
+        setIngredientes(['']);
+        setModoPreparo(['']);
+        setCategoria('');
+        setTempoPreparo('');
+        setPorcoes('');
+        setDificuldade('média');
+        setImagem(null);
+      } else {
+        setErro(dados.erro || 'Erro ao enviar receita');
+      }
+    } catch (err) {
+      setErro('Erro ao conectar com o servidor');
     }
-  } catch (err) {
-    setErro('Erro ao conectar com o servidor');
-  }
-};
+  };
 
   return (
     <>
@@ -122,7 +121,19 @@ function CriarReceita() {
           </div>
           <div style={{marginBottom:16}}>
             <label><strong>Categoria:</strong></label>
-            <input type="text" value={categoria} onChange={e => setCategoria(e.target.value)} required style={{width:'100%'}} />
+            <select
+              value={categoria}
+              onChange={e => setCategoria(e.target.value)}
+              required
+              style={{width:'100%', padding:'8px'}}
+            >
+              <option value="" disabled>Selecione uma categoria</option>
+              <option value="sobremesas">Sobremesas</option>
+              <option value="carnes">Carnes</option>
+              <option value="peixes">Peixes</option>
+              <option value="aves">Aves</option>
+              <option value="saladas">Saladas</option>
+            </select>
           </div>
           <div style={{marginBottom:16, display:'flex', gap:16}}>
             <div style={{flex:1}}>

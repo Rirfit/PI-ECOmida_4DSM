@@ -21,7 +21,7 @@ function Usuario() {
       return;
     }
 
-    fetch('http://localhost:5000/perfil', {
+    fetch('http://localhost:5000/usuario', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
@@ -46,7 +46,7 @@ function Usuario() {
   const handleSalvar = async (campo) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/perfil', {
+      const res = await fetch('http://localhost:5000/usuario', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
