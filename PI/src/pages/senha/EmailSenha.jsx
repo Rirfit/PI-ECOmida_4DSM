@@ -11,7 +11,7 @@ function EmailSenha() {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/forgot-password', {
+      const response = await fetch('http://localhost:5000/esqueci-senha', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -22,9 +22,9 @@ function EmailSenha() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage('Um link de redefinição foi enviado para seu e-mail.');
+        setMessage(data.mensagem || 'Um link de redefinição foi enviado para seu e-mail.');
       } else {
-        setMessage(data.message || 'Erro ao enviar o e-mail.');
+        setMessage(data.erro || 'Erro ao enviar o e-mail.');
       }
     } catch (error) {
       console.error('Erro:', error);
@@ -62,4 +62,3 @@ function EmailSenha() {
 }
 
 export default EmailSenha;
-

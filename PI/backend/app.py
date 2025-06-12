@@ -84,11 +84,10 @@ def validar_senha(senha):
 # Função para enviar email (configurar com suas credenciais)
 def enviar_email_reset(email, token):
     try:
-        # Configurar com suas credenciais de email
-        smtp_server = "smtp.gmail.com"  # ou seu servidor SMTP
-        smtp_port = 587
-        remetente_email = "seu_email@gmail.com"  # Configure aqui
-        remetente_senha = "sua_senha_app"  # Configure aqui
+        smtp_server = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+        smtp_port = int(os.getenv("MAIL_PORT", 587))
+        remetente_email = os.getenv("MAIL_USERNAME")
+        remetente_senha = os.getenv("MAIL_PASSWORD")
         
         mensagem = MIMEMultipart()
         mensagem['From'] = remetente_email
@@ -97,16 +96,19 @@ def enviar_email_reset(email, token):
         
         corpo = f"""
         Olá!
-        
+
         Você solicitou a redefinição de sua senha no ECOmida.
-        
-        Use o código abaixo para redefinir sua senha:
+
+        Clique no link abaixo para redefinir sua senha:
+        http://localhost:5173/redefinir-senha?token={token}
+
+        Ou, se preferir, use este código manualmente na tela de redefinição:
         {token}
-        
-        Este código expira em 1 hora.
-        
+
+        Este link e código expiram em 1 hora.
+
         Se você não solicitou esta redefinição, ignore este email.
-        
+
         Atenciosamente,
         Equipe ECOmida
         """
@@ -242,10 +244,10 @@ def esqueci_senha():
         })
 
         # Enviar email (descomente e configure para usar)
-        # if enviar_email_reset(email, token_reset):
-        #     return jsonify({'mensagem': 'Email de redefinição enviado'}), 200
-        # else:
-        #     return jsonify({'erro': 'Erro ao enviar email'}), 500
+        if enviar_email_reset(email, token_reset):
+            return jsonify({'mensagem': 'Email de redefinição enviado'}), 200
+        else:
+            return jsonify({'erro': 'Erro ao enviar email'}), 500
 
         return jsonify({
             'mensagem': 'Se o email existir, um link será enviado',
@@ -258,56 +260,62 @@ def esqueci_senha():
 @app.route('/redefinir-senha', methods=['POST'])
 def redefinir_senha():
     try:
+        print("Recebendo requisição para redefinir senha")
         dados = request.get_json()
+        print("Dados recebidos:", dados)
         token = dados.get('token', '')
         nova_senha = dados.get('nova_senha', '')
         confirmar_senha = dados.get('confirmar_senha', '')
 
         if not all([token, nova_senha, confirmar_senha]):
+            print("Campos obrigatórios faltando")
             return jsonify({'erro': 'Todos os campos são obrigatórios'}), 400
 
         valido, erro_senha = validar_senha(nova_senha)
         if not valido:
+            print("Senha inválida:", erro_senha)
             return jsonify({'erro': erro_senha}), 400
 
         if nova_senha != confirmar_senha:
+            print("Senhas não coincidem")
             return jsonify({'erro': 'As senhas não coincidem'}), 400
 
-        # Verificar token
         token_doc = tokens_reset_collection.find_one({
             'token': token,
             'expirado': False
         })
+        print("Token encontrado:", token_doc)
 
         if not token_doc:
+            print("Token inválido ou expirado")
             return jsonify({'erro': 'Token inválido ou expirado'}), 400
 
-        # Verificar se token não expirou (1 hora)
-        if datetime.datetime.now(datetime.UTC) - token_doc['criado_em'] > datetime.timedelta(hours=1):
+        if datetime.datetime.now() - token_doc['criado_em'] > datetime.timedelta(hours=1):
             tokens_reset_collection.update_one(
                 {'_id': token_doc['_id']},
                 {'$set': {'expirado': True}}
             )
+            print("Token expirado")
             return jsonify({'erro': 'Token expirado'}), 400
 
-        # Atualizar senha
         hash_nova_senha = generate_password_hash(nova_senha)
         usuarios_collection.update_one(
             {'email': token_doc['email']},
             {'$set': {'senha': hash_nova_senha}}
         )
 
-        # Invalidar token
         tokens_reset_collection.update_one(
             {'_id': token_doc['_id']},
             {'$set': {'expirado': True}}
         )
 
+        print("Senha redefinida com sucesso!")
         return jsonify({'mensagem': 'Senha redefinida com sucesso!'}), 200
 
     except Exception as e:
+        print("Erro ao redefinir senha:", e)
         return jsonify({'erro': 'Erro interno do servidor'}), 500
-
+    
 # =================== ROTAS DE USUÁRIO ===================
 
 @app.route('/usuario', methods=['GET'])

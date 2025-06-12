@@ -36,8 +36,8 @@ import SaladaAbacate from './pages/saladas/SaladaAbacate'
 import SaladaBeterraba from './pages/saladas/SaladaBeterraba'
 import SaladaGrao from './pages/saladas/SaladaGrao'
 import SaladaManga from './pages/saladas/SaladaManga'
-
-
+import RedefinirSenha from './pages/senha/RedefinirSenha';
+import Receita from './pages/receitas/Receita';
 
 function App() {
   return (
@@ -55,6 +55,7 @@ function App() {
           <Route path='Peixes' element={<Peixes />} />
           <Route path='MudarSenha' element={<MudarSenha />} />
           <Route path="/criar-receita" element={<CriarReceita />} />
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
           {/* Rotas protegidas */}
           <Route path='Doacao' element={
             <PrivateRoute>
@@ -83,6 +84,7 @@ function App() {
           <Route path='GratinadoFrango'element={<GratinadoFrango/>} />
           <Route path='Macarronese'element={<Macarronese/>} />
           <Route path='TortaDeFrango'element={<TortaDeFrango/>} />
+          <Route path="/receita/:id" element={<Receita />} />
           <Route path='Saladas'element={<Saladas/>} />
           <Route path='SaladaGrao'element={<SaladaGrao/>} />
           <Route path='SaladaManga'element={<SaladaManga/>} />
