@@ -52,7 +52,10 @@ function Usuario() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ [campo]: novoUsuario[campo] })
+        body: JSON.stringify({
+        nome: novoUsuario.nome,
+        email: novoUsuario.email
+        })
       });
       if (!res.ok) throw new Error('Erro ao atualizar');
       setUsuario(prev => ({ ...prev, [campo]: novoUsuario[campo] }));
