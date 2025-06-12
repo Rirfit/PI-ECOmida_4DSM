@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/header/Header';
+import '../sobremesas/Bolo.css'; // Importa o CSS para estilização
 
 function Receita() {
   const { id } = useParams();
@@ -32,17 +33,18 @@ function Receita() {
     <>
       <Header />
       <div className="pagina-receita">
+        {/* Cabeçalho com título */}
         <header className="receita-header">
           <h1>{receita.titulo}</h1>
         </header>
 
+        {/* Container com imagem e infos */}
         <div className="imagem-e-info-container">
           {imagemUrl && (
             <img
               src={imagemUrl}
               alt={receita.titulo}
               className="receita-imagem"
-              style={{ maxHeight: 400, objectFit: 'cover', borderRadius: 8 }}
             />
           )}
           <div className="receita-info">
@@ -52,6 +54,7 @@ function Receita() {
           </div>
         </div>
 
+        {/* Ingredientes */}
         <section className="ingredientes">
           <h2>Ingredientes</h2>
           <ul>
@@ -61,6 +64,7 @@ function Receita() {
           </ul>
         </section>
 
+        {/* Modo de preparo */}
         <section className="preparo">
           <h2>Modo de Preparo</h2>
           <ol>
@@ -70,6 +74,7 @@ function Receita() {
           </ol>
         </section>
 
+        {/* Dicas/Descrição */}
         {receita.descricao && (
           <section className="dicas">
             <h3>Descrição</h3>
@@ -80,3 +85,5 @@ function Receita() {
     </>
   );
 }
+
+export default Receita;
