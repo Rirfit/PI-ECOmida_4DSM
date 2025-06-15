@@ -10,6 +10,9 @@ function Receita() {
   const [usuarioId, setUsuarioId] = useState('');
   const navigate = useNavigate();
 
+  const [minhaNota, setMinhaNota] = useState(0);
+  const [avaliando, setAvaliando] = useState(false);
+
   useEffect(() => {
     // Busca receita
     fetch(`http://localhost:5000/receitas/${id}`)
@@ -38,6 +41,25 @@ function Receita() {
 
   if (erro) return <div style={{ color: 'red', textAlign: 'center', marginTop: 40 }}>{erro}</div>;
   if (!receita) return <div style={{ textAlign: 'center', marginTop: 40 }}>Carregando...</div>;
+
+  const enviarAvaliacao = async (nota) => {
+    setAvaliando(true);
+    const token = localStorage.getItem('token');
+    const res = await fetch(`http://localhost:5000/receitas/${id}/avaliar`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ nota })
+    });
+    setAvaliando(false);
+    if (res.ok) {
+      setMinhaNota(nota);
+      // Atualize a receita para mostrar a nova média
+      window.location.reload();
+    }
+  };
 
   const imagemUrl = receita.imagem
     ? (receita.imagem.startsWith('http') ? receita.imagem : `http://localhost:5000/static/${receita.imagem}`)
@@ -76,6 +98,26 @@ function Receita() {
         <header className="receita-header">
           <h1>{receita.titulo}</h1>
         </header>
+
+        <div style={{margin: '12px 0'}}>
+          <span>Avalie esta receita: </span>
+          {Array.from({length: 5}).map((_, i) => (
+            <span
+              key={i}
+              style={{
+                color: i < (minhaNota || receita.media_avaliacao || 0) ? '#FFD700' : '#ccc',
+                fontSize: 24,
+                cursor: 'pointer'
+              }}
+              onClick={() => enviarAvaliacao(i+1)}
+              title={`Dar nota ${i+1}`}
+            >★</span>
+          ))}
+          {avaliando && <span> Enviando...</span>}
+          <span style={{fontSize:12, marginLeft:8}}>
+            Média: {receita.media_avaliacao || 0} ({receita.total_avaliacoes || 0} avaliações)
+          </span>
+        </div>
 
         <div className="imagem-e-info-container">
           {imagemUrl && (

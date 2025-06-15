@@ -432,6 +432,15 @@ def listar_receitas():
         # Converter ObjectId para string
         for receita in receitas:
             receita['_id'] = str(receita['_id'])
+            
+            avaliacoes = receita.get('avaliacoes', [])
+            if avaliacoes:
+                media = sum(a['nota'] for a in avaliacoes) / len(avaliacoes)
+                receita['media_avaliacao'] = round(media, 1)
+                receita['total_avaliacoes'] = len(avaliacoes)
+            else:
+                receita['media_avaliacao'] = 0
+                receita['total_avaliacoes'] = 0
 
         return jsonify({'receitas': receitas}), 200
 
@@ -447,6 +456,14 @@ def obter_receita(receita_id):
             return jsonify({'erro': 'Receita não encontrada'}), 404
 
         receita['_id'] = str(receita['_id'])
+        avaliacoes = receita.get('avaliacoes', [])
+        if avaliacoes:
+            media = sum(a['nota'] for a in avaliacoes) / len(avaliacoes)
+            receita['media_avaliacao'] = round(media, 1)
+            receita['total_avaliacoes'] = len(avaliacoes)
+        else:
+            receita['media_avaliacao'] = 0
+            receita['total_avaliacoes'] = 0
         return jsonify({'receita': receita}), 200
 
     except Exception as e:
@@ -646,6 +663,34 @@ def listar_pontos_entrega():
 @app.route('/imagens/<path:filename>')
 def imagens(filename):
     return send_from_directory('static/imagens', filename)
+
+@app.route('/receitas/<receita_id>/avaliar', methods=['POST'])
+@verificar_token
+def avaliar_receita(receita_id):
+    try:
+        dados = request.get_json()
+        nota = int(dados.get('nota', 0))
+        if nota < 1 or nota > 5:
+            return jsonify({'erro': 'Nota deve ser entre 1 e 5'}), 400
+
+        usuario_id = str(request.usuario_atual['_id'])
+        receita = receitas_collection.find_one({'_id': ObjectId(receita_id)})
+        if not receita:
+            return jsonify({'erro': 'Receita não encontrada'}), 404
+
+        # Remove avaliação anterior do usuário, se existir
+        avaliacoes = receita.get('avaliacoes', [])
+        avaliacoes = [a for a in avaliacoes if a['usuario_id'] != usuario_id]
+        avaliacoes.append({'usuario_id': usuario_id, 'nota': nota})
+
+        receitas_collection.update_one(
+            {'_id': ObjectId(receita_id)},
+            {'$set': {'avaliacoes': avaliacoes}}
+        )
+
+        return jsonify({'mensagem': 'Avaliação registrada com sucesso!'}), 200
+    except Exception as e:
+        return jsonify({'erro': 'Erro ao registrar avaliação'}), 500
 
 
 # =================== INICIALIZAÇÃO ===================

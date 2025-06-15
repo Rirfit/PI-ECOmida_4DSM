@@ -65,10 +65,7 @@ function Usuario() {
     }
   };
 
-  
-  if (loading) return <p className="estado-feedback">Carregando...</p>;
-  if (erro) return <p className="estado-feedback erro">Erro: {erro}</p>;
-
+    
   return (
     <>
       <Header />
