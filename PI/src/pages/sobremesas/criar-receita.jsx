@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/header/Header';
-import './criar-receita.css'; // Reaproveita o estilo do Bolo
+import './criar-receita.css';
 
 function CriarReceita() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  // Estados do formulário
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [ingredientes, setIngredientes] = useState(['']);
@@ -11,14 +16,44 @@ function CriarReceita() {
   const [tempoPreparo, setTempoPreparo] = useState('');
   const [porcoes, setPorcoes] = useState('');
   const [dificuldade, setDificuldade] = useState('média');
+  const [imagem, setImagem] = useState(null);
   const [mensagem, setMensagem] = useState('');
   const [erro, setErro] = useState('');
-  const [imagem, setImagem] = useState(null);
 
+  // Carregar dados da receita para edição
+  useEffect(() => {
+    if (id) {
+      fetch(`http://localhost:5000/receitas/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.receita) {
+            setTitulo(data.receita.titulo || '');
+            setDescricao(data.receita.descricao || '');
+            setIngredientes(data.receita.ingredientes && data.receita.ingredientes.length > 0 ? data.receita.ingredientes : ['']);
+            setModoPreparo(data.receita.modo_preparo && data.receita.modo_preparo.length > 0 ? data.receita.modo_preparo : ['']);
+            setCategoria(data.receita.categoria || '');
+            setTempoPreparo(data.receita.tempo_preparo || '');
+            setPorcoes(data.receita.porcoes || '');
+            setDificuldade(data.receita.dificuldade || 'média');
+            // Não preenche imagem (por segurança, só troca se o usuário enviar nova)
+          } else {
+            setErro('Receita não encontrada');
+          }
+        })
+        .catch(() => setErro('Erro ao buscar receita para edição'));
+    }
+  }, [id]);
+
+  // Manipuladores para listas dinâmicas
   const handleIngredienteChange = (i, value) => {
     const novos = [...ingredientes];
     novos[i] = value;
     setIngredientes(novos);
+  };
+  const handleAddIngrediente = () => setIngredientes([...ingredientes, '']);
+  const handleRemoveIngrediente = (i) => {
+    const novos = ingredientes.filter((_, idx) => idx !== i);
+    setIngredientes(novos.length ? novos : ['']);
   };
 
   const handleModoPreparoChange = (i, value) => {
@@ -26,13 +61,13 @@ function CriarReceita() {
     novos[i] = value;
     setModoPreparo(novos);
   };
+  const handleAddModoPreparo = () => setModoPreparo([...modoPreparo, '']);
+  const handleRemoveModoPreparo = (i) => {
+    const novos = modoPreparo.filter((_, idx) => idx !== i);
+    setModoPreparo(novos.length ? novos : ['']);
+  };
 
-  const adicionarIngrediente = () => setIngredientes([...ingredientes, '']);
-  const adicionarPasso = () => setModoPreparo([...modoPreparo, '']);
-
-  const removerIngrediente = (i) => setIngredientes(ingredientes.filter((_, idx) => idx !== i));
-  const removerPasso = (i) => setModoPreparo(modoPreparo.filter((_, idx) => idx !== i));
-
+  // Envio do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMensagem('');
@@ -50,31 +85,25 @@ function CriarReceita() {
       formData.append('dificuldade', dificuldade);
       if (imagem) formData.append('imagem', imagem);
 
-      const resposta = await fetch('http://localhost:5000/receitas', {
-        method: 'POST',
+      const url = id
+        ? `http://localhost:5000/receitas/${id}`
+        : 'http://localhost:5000/receitas';
+
+      const resposta = await fetch(url, {
+        method: id ? 'PUT' : 'POST',
         headers: {
           Authorization: `Bearer ${token}`
-          // NÃO coloque 'Content-Type', o browser define automaticamente para FormData!
         },
         body: formData
       });
       const dados = await resposta.json();
       if (resposta.ok) {
-        setMensagem('Receita enviada com sucesso!');
-        // Limpa o formulário
-        setTitulo('');
-        setDescricao('');
-        setIngredientes(['']);
-        setModoPreparo(['']);
-        setCategoria('');
-        setTempoPreparo('');
-        setPorcoes('');
-        setDificuldade('média');
-        setImagem(null);
+        setMensagem(id ? 'Receita editada com sucesso!' : 'Receita enviada com sucesso!');
+        setTimeout(() => navigate('/Receitas'), 1500);
       } else {
         setErro(dados.erro || 'Erro ao enviar receita');
       }
-    } catch (err) {
+    } catch {
       setErro('Erro ao conectar com o servidor');
     }
   };
@@ -84,86 +113,80 @@ function CriarReceita() {
       <Header />
       <div className="pagina-receita">
         <header className="receita-header">
-          <h1>Enviar Receita</h1>
+          <h1>{id ? 'Editar Receita' : 'Enviar Receita'}</h1>
         </header>
         <form onSubmit={handleSubmit} className="form-receita" style={{background:'#fff', borderRadius:8, padding:24, maxWidth:600, margin:'0 auto', boxShadow:'0 2px 6px rgba(0,0,0,0.08)'}}>
-          <div style={{marginBottom:16}}>
-            <label><strong>Título:</strong></label>
-            <input type="text" value={titulo} onChange={e => setTitulo(e.target.value)} required style={{width:'100%'}} />
-          </div>
-          <div style={{marginBottom:16}}>
-            <label><strong>Descrição:</strong></label>
-            <textarea value={descricao} onChange={e => setDescricao(e.target.value)} rows={2} style={{width:'100%'}} />
-          </div>
-          <div style={{marginBottom:16}}>
-            <label><strong>Ingredientes:</strong></label>
-            {ingredientes.map((ing, i) => (
-              <div key={i} style={{display:'flex', gap:8, marginBottom:4}}>
-                <input type="text" value={ing} onChange={e => handleIngredienteChange(i, e.target.value)} required />
-                {ingredientes.length > 1 && (
-                  <button type="button" onClick={() => removerIngrediente(i)} style={{background:'#e53935', color:'#fff', border:'none', borderRadius:4, padding:'0 8px'}}>X</button>
-                )}
-              </div>
-            ))}
-            <button type="button" onClick={adicionarIngrediente} style={{marginTop:4}}>Adicionar ingrediente</button>
-          </div>
-          <div style={{marginBottom:16}}>
-            <label><strong>Modo de Preparo:</strong></label>
-            {modoPreparo.map((passo, i) => (
-              <div key={i} style={{display:'flex', gap:8, marginBottom:4}}>
-                <input type="text" value={passo} onChange={e => handleModoPreparoChange(i, e.target.value)} required />
-                {modoPreparo.length > 1 && (
-                  <button type="button" onClick={() => removerPasso(i)} style={{background:'#e53935', color:'#fff', border:'none', borderRadius:4, padding:'0 8px'}}>X</button>
-                )}
-              </div>
-            ))}
-            <button type="button" onClick={adicionarPasso} style={{marginTop:4}}>Adicionar passo</button>
-          </div>
-          <div style={{marginBottom:16}}>
-            <label><strong>Categoria:</strong></label>
-            <select
-              value={categoria}
-              onChange={e => setCategoria(e.target.value)}
-              required
-              style={{width:'100%', padding:'8px'}}
-            >
-              <option value="" disabled>Selecione uma categoria</option>
+          {erro && <p style={{ color: 'red' }}>{erro}</p>}
+          {mensagem && <p style={{ color: 'green' }}>{mensagem}</p>}
+
+          <label>Título:
+            <input type="text" value={titulo} onChange={e => setTitulo(e.target.value)} required />
+          </label>
+
+          <label>Descrição:
+            <textarea value={descricao} onChange={e => setDescricao(e.target.value)} />
+          </label>
+
+          <label>Categoria:
+            <select value={categoria} onChange={e => setCategoria(e.target.value)} required>
+              <option value="">Selecione a categoria</option>
               <option value="sobremesas">Sobremesas</option>
               <option value="carnes">Carnes</option>
-              <option value="peixes">Peixes</option>
               <option value="aves">Aves</option>
+              <option value="peixes">Peixes</option>
               <option value="saladas">Saladas</option>
             </select>
-          </div>
-          <div style={{marginBottom:16, display:'flex', gap:16}}>
-            <div style={{flex:1}}>
-              <label><strong>Tempo de preparo:</strong></label>
-              <input type="text" value={tempoPreparo} onChange={e => setTempoPreparo(e.target.value)} style={{width:'100%'}} />
-            </div>
-            <div style={{flex:1}}>
-              <label><strong>Porções:</strong></label>
-              <input type="number" value={porcoes} onChange={e => setPorcoes(e.target.value)} style={{width:'100%'}} />
-            </div>
-            <div style={{flex:1}}>
-              <label><strong>Dificuldade:</strong></label>
-              <select value={dificuldade} onChange={e => setDificuldade(e.target.value)} style={{width:'100%'}}>
+          </label>
+
+          <label>Tempo de Preparo (min):
+            <input type="number" value={tempoPreparo} onChange={e => setTempoPreparo(e.target.value)} />
+          </label>
+
+          <label>Porções:
+            <input type="number" value={porcoes} onChange={e => setPorcoes(e.target.value)} />
+          </label>
+
+          <label>Dificuldade:
+            <select value={dificuldade} onChange={e => setDificuldade(e.target.value)}>
                 <option value="fácil">Fácil</option>
                 <option value="média">Média</option>
                 <option value="difícil">Difícil</option>
               </select>
+          </label>
+
+          <label>Ingredientes:</label>
+          {ingredientes.map((ing, i) => (
+            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 4 }}>
+              <input
+                type="text"
+                value={ing}
+                onChange={e => handleIngredienteChange(i, e.target.value)}
+                required
+              />
+              <button type="button" onClick={() => handleRemoveIngrediente(i)} style={{fontSize:18, padding:'0 8px'}}>−</button>
             </div>
-          </div>
-          {mensagem && <div style={{color:'green', marginBottom:8}}>{mensagem}</div>}
-          {erro && <div style={{color:'red', marginBottom:8}}>{erro}</div>}
-          <div style={{marginBottom:16}}>
-            <label><strong>Imagem da receita (opcional):</strong></label>
+          ))}
+          <button type="button" onClick={handleAddIngrediente} style={{marginBottom:12}}>Adicionar ingrediente</button>
+
+          <label>Modo de Preparo:</label>
+          {modoPreparo.map((passo, i) => (
+            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 4 }}>
             <input
-                type="file"
-                accept="image/*"
-                onChange={e => setImagem(e.target.files[0])}
+                type="text"
+                value={passo}
+                onChange={e => handleModoPreparoChange(i, e.target.value)}
+                required
             />
+              <button type="button" onClick={() => handleRemoveModoPreparo(i)} style={{fontSize:18, padding:'0 8px'}}>−</button>
           </div>
-          <button type="submit" style={{background:'#1976d2', color:'#fff', border:'none', borderRadius:6, padding:'10px 24px', fontWeight:'bold', fontSize:16, cursor:'pointer'}}>Enviar Receita</button>
+          ))}
+          <button type="button" onClick={handleAddModoPreparo} style={{marginBottom:12}}>Adicionar passo</button>
+
+          <label>Imagem:
+            <input type="file" accept="image/*" onChange={e => setImagem(e.target.files[0])} />
+          </label>
+
+          <button type="submit" style={{marginTop:16}}>{id ? 'Salvar Alterações' : 'Enviar Receita'}</button>
         </form>
       </div>
     </>

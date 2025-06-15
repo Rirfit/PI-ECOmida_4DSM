@@ -63,10 +63,26 @@ function Carnes() {
           {receitasDinamicas.map((receita) => (
             <Link key={receita._id} to={`/receita/${receita._id}`} className="categoria">
               <img
-                src={receita.imagem ? baseUrlImagem + receita.imagem : 'https://via.placeholder.com/150'}
+                src={
+                  receita.imagem
+                    ? (receita.imagem.startsWith('http')
+                        ? receita.imagem
+                        : baseUrlImagem + receita.imagem)
+                    : 'https://via.placeholder.com/150'
+                }
                 alt={receita.titulo}
               />
               <h4>{receita.titulo}</h4>
+              <div>
+                {Array.from({length: 5}).map((_, i) => (
+                  <span key={i} style={{color: i < (receita.media_avaliacao || 0) ? '#FFD700' : '#ccc'}}>
+                    ★
+                  </span>
+                ))}
+                <span style={{fontSize:12, marginLeft:4}}>
+                  ({receita.total_avaliacoes || 0})
+                </span>
+              </div>
             </Link>
           ))}
         </div>

@@ -1,19 +1,22 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import './Header.css';
 import logoBranca from '../../assets/Logo-branca.png';
 import logoPreta from '../../assets/Logo-preta.png';
+import { useNavigate } from 'react-router-dom';
+import './Header.css';
 
 const Header = () => {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const nomeUsuario = localStorage.getItem('nome');
 
-  function handleLogout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('nome');
-    window.location.href = '/';
-  }
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('nome');
+      navigate('/');
+  };
 
   return (
     <header className={`header ${isHome ? 'dark' : 'light'}`}>

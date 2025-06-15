@@ -1,27 +1,37 @@
+from bson.objectid import ObjectId
+from dotenv import load_dotenv
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, jsonify
 from flask import send_from_directory
 from flask_cors import CORS
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
-import jwt
+import cloudinary
+import cloudinary.uploader
 import datetime
+import jwt
 import os
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import secrets
 import re
+import smtplib
+import secrets
+
 
 
 
 
 load_dotenv()
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
 app = Flask(__name__)
 CORS(app)
+
+
 
 # Configuração
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secreta')
@@ -84,11 +94,10 @@ def validar_senha(senha):
 # Função para enviar email (configurar com suas credenciais)
 def enviar_email_reset(email, token):
     try:
-        # Configurar com suas credenciais de email
-        smtp_server = "smtp.gmail.com"  # ou seu servidor SMTP
-        smtp_port = 587
-        remetente_email = "seu_email@gmail.com"  # Configure aqui
-        remetente_senha = "sua_senha_app"  # Configure aqui
+        smtp_server = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+        smtp_port = int(os.getenv("MAIL_PORT", 587))
+        remetente_email = os.getenv("MAIL_USERNAME")
+        remetente_senha = os.getenv("MAIL_PASSWORD")
         
         mensagem = MIMEMultipart()
         mensagem['From'] = remetente_email
@@ -97,16 +106,19 @@ def enviar_email_reset(email, token):
         
         corpo = f"""
         Olá!
-        
+
         Você solicitou a redefinição de sua senha no ECOmida.
-        
-        Use o código abaixo para redefinir sua senha:
+
+        Clique no link abaixo para redefinir sua senha:
+        http://localhost:5173/redefinir-senha?token={token}
+
+        Ou, se preferir, use este código manualmente na tela de redefinição:
         {token}
-        
-        Este código expira em 1 hora.
-        
+
+        Este link e código expiram em 1 hora.
+
         Se você não solicitou esta redefinição, ignore este email.
-        
+
         Atenciosamente,
         Equipe ECOmida
         """
@@ -242,10 +254,10 @@ def esqueci_senha():
         })
 
         # Enviar email (descomente e configure para usar)
-        # if enviar_email_reset(email, token_reset):
-        #     return jsonify({'mensagem': 'Email de redefinição enviado'}), 200
-        # else:
-        #     return jsonify({'erro': 'Erro ao enviar email'}), 500
+        if enviar_email_reset(email, token_reset):
+            return jsonify({'mensagem': 'Email de redefinição enviado'}), 200
+        else:
+            return jsonify({'erro': 'Erro ao enviar email'}), 500
 
         return jsonify({
             'mensagem': 'Se o email existir, um link será enviado',
@@ -258,56 +270,62 @@ def esqueci_senha():
 @app.route('/redefinir-senha', methods=['POST'])
 def redefinir_senha():
     try:
+        print("Recebendo requisição para redefinir senha")
         dados = request.get_json()
+        print("Dados recebidos:", dados)
         token = dados.get('token', '')
         nova_senha = dados.get('nova_senha', '')
         confirmar_senha = dados.get('confirmar_senha', '')
 
         if not all([token, nova_senha, confirmar_senha]):
+            print("Campos obrigatórios faltando")
             return jsonify({'erro': 'Todos os campos são obrigatórios'}), 400
 
         valido, erro_senha = validar_senha(nova_senha)
         if not valido:
+            print("Senha inválida:", erro_senha)
             return jsonify({'erro': erro_senha}), 400
 
         if nova_senha != confirmar_senha:
+            print("Senhas não coincidem")
             return jsonify({'erro': 'As senhas não coincidem'}), 400
 
-        # Verificar token
         token_doc = tokens_reset_collection.find_one({
             'token': token,
             'expirado': False
         })
+        print("Token encontrado:", token_doc)
 
         if not token_doc:
+            print("Token inválido ou expirado")
             return jsonify({'erro': 'Token inválido ou expirado'}), 400
 
-        # Verificar se token não expirou (1 hora)
-        if datetime.datetime.now(datetime.UTC) - token_doc['criado_em'] > datetime.timedelta(hours=1):
+        if datetime.datetime.now() - token_doc['criado_em'] > datetime.timedelta(hours=1):
             tokens_reset_collection.update_one(
                 {'_id': token_doc['_id']},
                 {'$set': {'expirado': True}}
             )
+            print("Token expirado")
             return jsonify({'erro': 'Token expirado'}), 400
 
-        # Atualizar senha
         hash_nova_senha = generate_password_hash(nova_senha)
         usuarios_collection.update_one(
             {'email': token_doc['email']},
             {'$set': {'senha': hash_nova_senha}}
         )
 
-        # Invalidar token
         tokens_reset_collection.update_one(
             {'_id': token_doc['_id']},
             {'$set': {'expirado': True}}
         )
 
+        print("Senha redefinida com sucesso!")
         return jsonify({'mensagem': 'Senha redefinida com sucesso!'}), 200
 
     except Exception as e:
+        print("Erro ao redefinir senha:", e)
         return jsonify({'erro': 'Erro interno do servidor'}), 500
-
+    
 # =================== ROTAS DE USUÁRIO ===================
 
 @app.route('/usuario', methods=['GET'])
@@ -414,6 +432,15 @@ def listar_receitas():
         # Converter ObjectId para string
         for receita in receitas:
             receita['_id'] = str(receita['_id'])
+            
+            avaliacoes = receita.get('avaliacoes', [])
+            if avaliacoes:
+                media = sum(a['nota'] for a in avaliacoes) / len(avaliacoes)
+                receita['media_avaliacao'] = round(media, 1)
+                receita['total_avaliacoes'] = len(avaliacoes)
+            else:
+                receita['media_avaliacao'] = 0
+                receita['total_avaliacoes'] = 0
 
         return jsonify({'receitas': receitas}), 200
 
@@ -429,6 +456,14 @@ def obter_receita(receita_id):
             return jsonify({'erro': 'Receita não encontrada'}), 404
 
         receita['_id'] = str(receita['_id'])
+        avaliacoes = receita.get('avaliacoes', [])
+        if avaliacoes:
+            media = sum(a['nota'] for a in avaliacoes) / len(avaliacoes)
+            receita['media_avaliacao'] = round(media, 1)
+            receita['total_avaliacoes'] = len(avaliacoes)
+        else:
+            receita['media_avaliacao'] = 0
+            receita['total_avaliacoes'] = 0
         return jsonify({'receita': receita}), 200
 
     except Exception as e:
@@ -440,15 +475,12 @@ def criar_receita():
     try:
         dados = request.form
         imagem = request.files.get('imagem')
-        caminho_imagem = None
+        url_imagem = None
 
         if imagem:
-            nome_arquivo = secure_filename(imagem.filename)
-            pasta = os.path.join('static', 'imagens')
-            os.makedirs(pasta, exist_ok=True)
-            caminho = os.path.join(pasta, nome_arquivo)
-            imagem.save(caminho)
-            caminho_imagem = f'imagens/{nome_arquivo}'
+            upload_result = cloudinary.uploader.upload(imagem)
+            url_imagem = upload_result.get('secure_url')
+
 
         # Pegue os campos normalmente de dados['campo']
         receita = {
@@ -464,7 +496,7 @@ def criar_receita():
             'autor_nome': request.usuario_atual['nome'],
             'data_criacao': datetime.datetime.now(datetime.UTC),
             'ativa': True,
-            'imagem': caminho_imagem
+            'imagem': url_imagem
         }
 
         resultado = receitas_collection.insert_one(receita)
@@ -477,6 +509,68 @@ def criar_receita():
         return jsonify({'erro': 'Erro interno do servidor'}), 500
     
     # Receitas com ID
+
+
+@app.route('/receitas/<receita_id>', methods=['PUT'])
+@verificar_token
+def editar_receita(receita_id):
+    try:
+        receita = receitas_collection.find_one({'_id': ObjectId(receita_id)})
+        if not receita:
+            return jsonify({'erro': 'Receita não encontrada'}), 404
+
+        if receita['autor_id'] != str(request.usuario_atual['_id']):
+            return jsonify({'erro': 'Permissão negada'}), 403
+
+        dados = request.form
+        imagem = request.files.get('imagem')
+        url_imagem = receita.get('imagem')
+
+        if imagem:
+            upload_result = cloudinary.uploader.upload(imagem)
+            url_imagem = upload_result.get('secure_url')
+
+        update_fields = {
+            'titulo': dados.get('titulo', receita['titulo']),
+            'descricao': dados.get('descricao', receita['descricao']),
+            'ingredientes': dados.getlist('ingredientes') or receita['ingredientes'],
+            'modo_preparo': dados.getlist('modo_preparo') or receita['modo_preparo'],
+            'categoria': dados.get('categoria', receita['categoria']),
+            'tempo_preparo': dados.get('tempo_preparo', receita['tempo_preparo']),
+            'porcoes': dados.get('porcoes', receita['porcoes']),
+            'dificuldade': dados.get('dificuldade', receita.get('dificuldade', 'média')),
+            'imagem': url_imagem
+        }
+
+        receitas_collection.update_one(
+            {'_id': ObjectId(receita_id)},
+            {'$set': update_fields}
+        )
+
+        return jsonify({'mensagem': 'Receita atualizada com sucesso!'}), 200
+
+    except Exception as e:
+        return jsonify({'erro': 'Erro interno do servidor'}), 500
+
+
+@app.route('/receitas/<receita_id>', methods=['DELETE'])
+@verificar_token
+def deletar_receita(receita_id):
+    try:
+        receita = receitas_collection.find_one({'_id': ObjectId(receita_id)})
+        if not receita:
+            return jsonify({'erro': 'Receita não encontrada'}), 404
+
+        if receita['autor_id'] != str(request.usuario_atual['_id']):
+            return jsonify({'erro': 'Permissão negada'}), 403
+
+        receitas_collection.delete_one({'_id': ObjectId(receita_id)})
+        return jsonify({'mensagem': 'Receita deletada com sucesso!'}), 200
+
+    except Exception as e:
+        return jsonify({'erro': 'Erro interno do servidor'}), 500
+
+
 
 @app.route('/receitas/minhas', methods=['GET'])
 @verificar_token
@@ -569,6 +663,34 @@ def listar_pontos_entrega():
 @app.route('/imagens/<path:filename>')
 def imagens(filename):
     return send_from_directory('static/imagens', filename)
+
+@app.route('/receitas/<receita_id>/avaliar', methods=['POST'])
+@verificar_token
+def avaliar_receita(receita_id):
+    try:
+        dados = request.get_json()
+        nota = int(dados.get('nota', 0))
+        if nota < 1 or nota > 5:
+            return jsonify({'erro': 'Nota deve ser entre 1 e 5'}), 400
+
+        usuario_id = str(request.usuario_atual['_id'])
+        receita = receitas_collection.find_one({'_id': ObjectId(receita_id)})
+        if not receita:
+            return jsonify({'erro': 'Receita não encontrada'}), 404
+
+        # Remove avaliação anterior do usuário, se existir
+        avaliacoes = receita.get('avaliacoes', [])
+        avaliacoes = [a for a in avaliacoes if a['usuario_id'] != usuario_id]
+        avaliacoes.append({'usuario_id': usuario_id, 'nota': nota})
+
+        receitas_collection.update_one(
+            {'_id': ObjectId(receita_id)},
+            {'$set': {'avaliacoes': avaliacoes}}
+        )
+
+        return jsonify({'mensagem': 'Avaliação registrada com sucesso!'}), 200
+    except Exception as e:
+        return jsonify({'erro': 'Erro ao registrar avaliação'}), 500
 
 
 # =================== INICIALIZAÇÃO ===================

@@ -52,7 +52,10 @@ function Usuario() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ [campo]: novoUsuario[campo] })
+        body: JSON.stringify({
+        nome: novoUsuario.nome,
+        email: novoUsuario.email
+        })
       });
       if (!res.ok) throw new Error('Erro ao atualizar');
       setUsuario(prev => ({ ...prev, [campo]: novoUsuario[campo] }));
@@ -62,14 +65,7 @@ function Usuario() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/');
-  };
-
-  if (loading) return <p className="estado-feedback">Carregando...</p>;
-  if (erro) return <p className="estado-feedback erro">Erro: {erro}</p>;
-
+    
   return (
     <>
       <Header />
@@ -135,9 +131,7 @@ function Usuario() {
           <button className="enviar-receita-botao" onClick={() => navigate('/criar-receita')}>
             Enviar uma Receita
           </button>
-          <button className="sair-botao" onClick={handleLogout}>
-            Sair
-          </button>
+          
         </div>
       </div>
       <Footer />
