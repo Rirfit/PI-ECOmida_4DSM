@@ -65,11 +65,7 @@ function Usuario() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/');
-  };
-
+  
   if (loading) return <p className="estado-feedback">Carregando...</p>;
   if (erro) return <p className="estado-feedback erro">Erro: {erro}</p>;
 
@@ -138,9 +134,7 @@ function Usuario() {
           <button className="enviar-receita-botao" onClick={() => navigate('/criar-receita')}>
             Enviar uma Receita
           </button>
-          <button className="sair-botao" onClick={handleLogout}>
-            Sair
-          </button>
+          
         </div>
       </div>
       <Footer />

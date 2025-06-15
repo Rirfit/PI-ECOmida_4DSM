@@ -8,6 +8,7 @@ import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
+import { Link } from 'react-router-dom';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
@@ -34,11 +35,11 @@ function Doacao() {
 
     // Monta os dados conforme o tipo de doação
     let doacao = {
-      type: tipoDoacao,
-      amount: tipoDoacao === 'dinheiro'
+      tipo: tipoDoacao,
+      valor: tipoDoacao === 'dinheiro'
         ? valorDinheiro
         : `${quantidade} ${medida} de ${alimento}`,
-      description: tipoDoacao === 'comida' && posicaoSelecionada
+      descricao: tipoDoacao === 'comida' && posicaoSelecionada
         ? `Ponto: ${posicaoSelecionada.nome} (${posicaoSelecionada.lat}, ${posicaoSelecionada.lng})`
         : '',
       nome,
@@ -52,7 +53,7 @@ function Doacao() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(doacao)
       });
@@ -73,6 +74,11 @@ function Doacao() {
       <Header />
 
       <div className="Doacao">
+        <div style={{ textAlign: 'right', marginBottom: 16 }}>
+          <Link to="/doacoes-lista" style={{ color: '#1976d2', textDecoration: 'underline', fontWeight: 'bold' }}>
+            Ver doações registradas
+          </Link>
+        </div>
         <form onSubmit={handleSubmit}>
           <h2>Doação</h2>
 
