@@ -1,27 +1,37 @@
+from bson.objectid import ObjectId
+from dotenv import load_dotenv
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, jsonify
 from flask import send_from_directory
 from flask_cors import CORS
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
-import jwt
+import cloudinary
+import cloudinary.uploader
 import datetime
+import jwt
 import os
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import secrets
 import re
+import smtplib
+import secrets
+
 
 
 
 
 load_dotenv()
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
 app = Flask(__name__)
 CORS(app)
+
+
 
 # Configuração
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secreta')
@@ -448,15 +458,12 @@ def criar_receita():
     try:
         dados = request.form
         imagem = request.files.get('imagem')
-        caminho_imagem = None
+        url_imagem = None
 
         if imagem:
-            nome_arquivo = secure_filename(imagem.filename)
-            pasta = os.path.join('static', 'imagens')
-            os.makedirs(pasta, exist_ok=True)
-            caminho = os.path.join(pasta, nome_arquivo)
-            imagem.save(caminho)
-            caminho_imagem = f'imagens/{nome_arquivo}'
+            upload_result = cloudinary.uploader.upload(imagem)
+            url_imagem = upload_result.get('secure_url')
+
 
         # Pegue os campos normalmente de dados['campo']
         receita = {
@@ -472,7 +479,7 @@ def criar_receita():
             'autor_nome': request.usuario_atual['nome'],
             'data_criacao': datetime.datetime.now(datetime.UTC),
             'ativa': True,
-            'imagem': caminho_imagem
+            'imagem': url_imagem
         }
 
         resultado = receitas_collection.insert_one(receita)
@@ -485,6 +492,68 @@ def criar_receita():
         return jsonify({'erro': 'Erro interno do servidor'}), 500
     
     # Receitas com ID
+
+
+@app.route('/receitas/<receita_id>', methods=['PUT'])
+@verificar_token
+def editar_receita(receita_id):
+    try:
+        receita = receitas_collection.find_one({'_id': ObjectId(receita_id)})
+        if not receita:
+            return jsonify({'erro': 'Receita não encontrada'}), 404
+
+        if receita['autor_id'] != str(request.usuario_atual['_id']):
+            return jsonify({'erro': 'Permissão negada'}), 403
+
+        dados = request.form
+        imagem = request.files.get('imagem')
+        url_imagem = receita.get('imagem')
+
+        if imagem:
+            upload_result = cloudinary.uploader.upload(imagem)
+            url_imagem = upload_result.get('secure_url')
+
+        update_fields = {
+            'titulo': dados.get('titulo', receita['titulo']),
+            'descricao': dados.get('descricao', receita['descricao']),
+            'ingredientes': dados.getlist('ingredientes') or receita['ingredientes'],
+            'modo_preparo': dados.getlist('modo_preparo') or receita['modo_preparo'],
+            'categoria': dados.get('categoria', receita['categoria']),
+            'tempo_preparo': dados.get('tempo_preparo', receita['tempo_preparo']),
+            'porcoes': dados.get('porcoes', receita['porcoes']),
+            'dificuldade': dados.get('dificuldade', receita.get('dificuldade', 'média')),
+            'imagem': url_imagem
+        }
+
+        receitas_collection.update_one(
+            {'_id': ObjectId(receita_id)},
+            {'$set': update_fields}
+        )
+
+        return jsonify({'mensagem': 'Receita atualizada com sucesso!'}), 200
+
+    except Exception as e:
+        return jsonify({'erro': 'Erro interno do servidor'}), 500
+
+
+@app.route('/receitas/<receita_id>', methods=['DELETE'])
+@verificar_token
+def deletar_receita(receita_id):
+    try:
+        receita = receitas_collection.find_one({'_id': ObjectId(receita_id)})
+        if not receita:
+            return jsonify({'erro': 'Receita não encontrada'}), 404
+
+        if receita['autor_id'] != str(request.usuario_atual['_id']):
+            return jsonify({'erro': 'Permissão negada'}), 403
+
+        receitas_collection.delete_one({'_id': ObjectId(receita_id)})
+        return jsonify({'mensagem': 'Receita deletada com sucesso!'}), 200
+
+    except Exception as e:
+        return jsonify({'erro': 'Erro interno do servidor'}), 500
+
+
 
 @app.route('/receitas/minhas', methods=['GET'])
 @verificar_token

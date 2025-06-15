@@ -65,7 +65,13 @@ function Peixes() {
           {receitasDinamicas.map((receita) => (
             <Link key={receita._id} to={`/receita/${receita._id}`} className="categoria">
               <img
-                src={receita.imagem ? baseUrlImagem + receita.imagem : 'https://via.placeholder.com/150'}
+                src={
+                  receita.imagem
+                    ? (receita.imagem.startsWith('http')
+                        ? receita.imagem
+                        : baseUrlImagem + receita.imagem)
+                    : 'https://via.placeholder.com/150'
+                }
                 alt={receita.titulo}
               />
               <h4>{receita.titulo}</h4>
