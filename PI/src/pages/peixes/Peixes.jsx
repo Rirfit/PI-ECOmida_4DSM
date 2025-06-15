@@ -75,6 +75,16 @@ function Peixes() {
                 alt={receita.titulo}
               />
               <h4>{receita.titulo}</h4>
+              <div>
+                {Array.from({length: 5}).map((_, i) => (
+                  <span key={i} style={{color: i < (receita.media_avaliacao || 0) ? '#FFD700' : '#ccc'}}>
+                    ★
+                  </span>
+                ))}
+                <span style={{fontSize:12, marginLeft:4}}>
+                  ({receita.total_avaliacoes || 0})
+                </span>
+              </div>
             </Link>
           ))}
         </div>
